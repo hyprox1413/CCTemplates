@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCTemplates</title>
+    <link rel="icon" href="/favicon/android-chrome-512x512.png">
+    <style>
+        .template-container {
+            margin: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-width: 800px;
+        }
+
+        .template-label {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .code-container {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .copy-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+
+        .copy-btn:hover {
+            background-color: #45a049;
+        }
+
+        .description {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Matthew's Competitive Coding (CC) Templates</h1>
+
+    <!-- Template -->
+    <div class="template-container">
+        <div class="template-label">Codeforces Default Template</div>
+        <div class="code-container">
+            <pre><code>// Author: Matthew Li
+// It is ok to share my code anonymously for educational purposes
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define ll long long
+
+int main() {
+  // fast io
+  ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
+
+  int tests;
+  cin >> tests;
+  for (int test = 0; test < tests; test++) {
+    
+  }
+}</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
+        <div class="template-label">Greatest Common Denominator</div>
+        <div class="code-container">
+            <pre><code>ll gcd(ll a, ll b) {
+  if (!b) {
+    return a;
+  }
+  return gcd(b, a % b);
+}</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
+        <div class="template-label">Disjoint Set Union</div>
+        <div class="code-container">
+            <pre><code>ll find(ll p, vector<ll> &id) {
+  if (id[p] < 0) {
+    return p;
+  }
+  return id[p] = find(id[p], id);
+}
+
+ll size(ll p, vector<ll> &id) {
+  ll idp = find(p, id);
+  return -id[idp];
+}
+
+void unite(ll p, ll q, vector<ll> &id) {
+  ll idp = find(p, id);
+  ll idq = find(q, id);
+  if (idp == idq) {
+    return;
+  }
+  if (id[idp] < id[idq]) {
+    id[idq] = id[idq] + id[idp];
+    id[idp] = idq;
+    return;
+  }
+  id[idp] = id[idp] + id[idq];
+  id[idq] = idp;
+}</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+        <div class="description">
+            DSU with path compression and union-by-size.  id holds the representatives of each set.  If id[x] is negative, it means that x is the representative and the set is of size -id[x]. 
+        </div>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
+        <div class="template-label">LinkedList</div>
+        <div class="code-container">
+            <pre><code>template <class T>
+struct linked_list {
+  T val;
+  linked_list &prev, &next;
+  linked_list() : prev(nullptr), next(nullptr) {};
+  linked_list(T v) : val(v), prev(nullptr), next(nullptr) {};
+};</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
+        <div class="template-label">Sparse Table</div>
+        <div class="code-container">
+            <pre><code>template <class T>
+struct sparse_table {
+  T (*op) (T a, T b);
+  unsigned int length, depth;
+  vector<vector<T>> table;
+  
+  sparse_table(vector<T> arr, T (*o) (T a, T b)) {
+    op = o;
+    length = arr.size();
+    depth = bit_width(length);
+    table = vector<vector<T>>(depth, vector<T>());
+    table[0] = arr;
+    for (unsigned int i = 1; i < depth; i++) {
+      for (unsigned int j = 0; j + (1 << i) <= length; j++) {
+        table[i].push_back(op(table[i - 1][j], table[i - 1][j + (1 << i - 1)]));
+      }
+    }
+  }
+  
+  T query(unsigned int l, unsigned int r) {
+    bool has_been_set = false;
+    T out;
+    for (unsigned int i = depth - 1; i >= 0; i--) {
+      while (l + (1 << i) - 1 <= r) {
+        if (!has_been_set) {
+          out = table[i][l];
+          has_been_set = true;
+        } else {
+          out = op(out, table[i][l]);
+        }
+        l += (1 << i);
+      }
+      if (!i) {
+        break;
+      }
+    }
+    return out;
+  }
+};</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+        <div class="description">
+            Typical Sparse Table.  Ensure that the binary operation passed to the constructor is associative.  TODO: support constant-time RMQ.
+        </div>
+    </div>
+
+    <script>
+        function copyCode(button) {
+            const codeContainer = button.previousElementSibling;
+            const code = codeContainer.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+    </script>
+</body>
+</html>
