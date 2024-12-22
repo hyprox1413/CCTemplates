@@ -64,7 +64,7 @@
             <pre><code>// Author: Matthew Li
 // It is ok to share my code anonymously for educational purposes
 
-#include <bits/stdc++.h>
+#include &lt;bits/stdc++.h&gt;
 using namespace std;
 
 #define ll long long
@@ -102,25 +102,25 @@ int main() {
     <div class="template-container">
         <div class="template-label">Disjoint Set Union</div>
         <div class="code-container">
-            <pre><code>ll find(ll p, vector<ll> &id) {
-  if (id[p] < 0) {
+            <pre><code>ll find(ll p, vector&lt;ll&gt; &id) {
+  if (id[p] &lt 0) {
     return p;
   }
   return id[p] = find(id[p], id);
 }
 
-ll size(ll p, vector<ll> &id) {
+ll size(ll p, vector&ltll&gt; &id) {
   ll idp = find(p, id);
   return -id[idp];
 }
 
-void unite(ll p, ll q, vector<ll> &id) {
+void unite(ll p, ll q, vector&ltll&gt; &id) {
   ll idp = find(p, id);
   ll idq = find(q, id);
   if (idp == idq) {
     return;
   }
-  if (id[idp] < id[idq]) {
+  if (id[idp] &lt id[idq]) {
     id[idq] = id[idq] + id[idp];
     id[idp] = idq;
     return;
@@ -139,7 +139,7 @@ void unite(ll p, ll q, vector<ll> &id) {
     <div class="template-container">
         <div class="template-label">LinkedList</div>
         <div class="code-container">
-            <pre><code>template <class T>
+            <pre><code>template &lt;class T&gt;
 struct linked_list {
   T val;
   linked_list &prev, &next;
@@ -154,21 +154,21 @@ struct linked_list {
     <div class="template-container">
         <div class="template-label">Sparse Table</div>
         <div class="code-container">
-            <pre><code>template <class T>
+            <pre><code>template &lt;class T&gt;
 struct sparse_table {
   T (*op) (T a, T b);
   unsigned int length, depth;
-  vector<vector<T>> table;
+  vector&lt;vector&lt;T&gt;&gt; table;
   
-  sparse_table(vector<T> arr, T (*o) (T a, T b)) {
+  sparse_table(vector&lt;T&gt; arr, T (*o) (T a, T b)) {
     op = o;
     length = arr.size();
     depth = bit_width(length);
-    table = vector<vector<T>>(depth, vector<T>());
+    table = vector&lt;vector&lt;T&gt;&gt;(depth, vector&lt;T&gt;());
     table[0] = arr;
-    for (unsigned int i = 1; i < depth; i++) {
-      for (unsigned int j = 0; j + (1 << i) <= length; j++) {
-        table[i].push_back(op(table[i - 1][j], table[i - 1][j + (1 << i - 1)]));
+    for (unsigned int i = 1; i &lt; depth; i++) {
+      for (unsigned int j = 0; j + (1 &lt;&lt; i) &lt;= length; j++) {
+        table[i].push_back(op(table[i - 1][j], table[i - 1][j + (1 &lt;&lt; i - 1)]));
       }
     }
   }
@@ -176,15 +176,15 @@ struct sparse_table {
   T query(unsigned int l, unsigned int r) {
     bool has_been_set = false;
     T out;
-    for (unsigned int i = depth - 1; i >= 0; i--) {
-      while (l + (1 << i) - 1 <= r) {
+    for (unsigned int i = depth - 1; i &gt;= 0; i--) {
+      while (l + (1 &lt;&lt; i) - 1 &lt;= r) {
         if (!has_been_set) {
           out = table[i][l];
           has_been_set = true;
         } else {
           out = op(out, table[i][l]);
         }
-        l += (1 << i);
+        l += (1 &lt;&lt; i);
       }
       if (!i) {
         break;
