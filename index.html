@@ -100,6 +100,21 @@ int main() {
 
     <!-- Template -->
     <div class="template-container">
+        <div class="template-label">LinkedList</div>
+        <div class="code-container">
+            <pre><code>template &lt;class T&gt;
+struct linked_list {
+  T val;
+  linked_list &prev, &next;
+  linked_list() : prev(nullptr), next(nullptr) {};
+  linked_list(T v) : val(v), prev(nullptr), next(nullptr) {};
+};</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
         <div class="template-label">Disjoint Set Union</div>
         <div class="code-container">
             <pre><code>ll find(ll p, vector&lt;ll&gt; &id) {
@@ -133,21 +148,6 @@ void unite(ll p, ll q, vector&ltll&gt; &id) {
         <div class="description">
             DSU with path compression and union-by-size.  id holds the representatives of each set.  If id[x] is negative, it means that x is the representative and the set is of size -id[x]. 
         </div>
-    </div>
-
-    <!-- Template -->
-    <div class="template-container">
-        <div class="template-label">LinkedList</div>
-        <div class="code-container">
-            <pre><code>template &lt;class T&gt;
-struct linked_list {
-  T val;
-  linked_list &prev, &next;
-  linked_list() : prev(nullptr), next(nullptr) {};
-  linked_list(T v) : val(v), prev(nullptr), next(nullptr) {};
-};</code></pre>
-        </div>
-        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
     </div>
 
     <!-- Template -->
@@ -197,6 +197,77 @@ struct sparse_table {
         <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
         <div class="description">
             Typical Sparse Table.  Ensure that the binary operation passed to the constructor is associative.  TODO: support constant-time RMQ.
+        </div>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
+        <div class="template-label">Fenwick Tree</div>
+        <div class="code-container">
+            <pre><code>template &lt;class T&gt;
+struct fenwick_tree {
+  T (*op) (T a, T b);
+  T (*inv) (T a);
+  T zero;
+  vector&lt;T&gt; bit;
+
+  T prefix(int idx) {
+    if (idx &lt; 0) {
+      return zero;
+    }
+    T result = bit[idx];
+    for (int i = (idx & idx + 1) - 1; i &gt;= 0; i = (i & i + 1) - 1) {
+      result = op(result, bit[i]);
+    }
+    return result;
+  }
+
+  T query(int l, int r) {
+    return op(prefix(r), inv(prefix(l - 1)));
+  }
+
+  void set(int idx, T val) {
+    T diff = op(val, inv(query(idx, idx)));
+    for (int i = idx; i &lt; bit.size(); i = i | i + 1) {
+      bit[i] = op(bit[i], diff);
+    }
+  }
+
+  void add(int idx, T val) {
+    for (int i = idx; i &lt; bit.size(); i = i | i + 1) {
+      bit[i] = op(bit[i], val);
+    }
+  }
+
+  void push_back(T val) {
+    int idx = bit.size();
+    int left = idx & (idx + 1);
+    if (idx == left) {
+      bit.push_back(val);
+    } else {
+      bit.push_back(op(val, query(left, idx - 1)));
+    }
+  }
+
+  int size() {
+    return bit.size();
+  }
+
+  fenwick_tree(vector&lt;T&gt; arr, T(*o) (T a, T b), T(*iv) (T a), T z) {
+    op = o;
+    inv = iv;
+    zero = z;
+    int length = arr.size();
+    bit = vector&lt;T&gt;(length, z);
+    for (int i = 0; i &lt; length; i++) {
+      add(i, arr[i]);
+    }
+  }
+};</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+        <div class="description">
+            Typical Fenwick Tree.  Ensure that the binary operation passed to the constructor is a group operation and supply its inverse and zero.
         </div>
     </div>
 
