@@ -86,21 +86,40 @@ int main() {
 
     <!-- Template -->
     <div class="template-container">
-        <div class="template-label">Greatest Common Denominator</div>
+        <div class="template-label">Modular Integer</div>
         <div class="code-container">
-            <pre><code>ll gcd(ll a, ll b) {
-  if (!b) {
-    return a;
+            <pre><code>// copied from https://codeforces.com/blog/entry/134789
+template &lt;typename T, auto M&gt; struct mint {
+  using V = conditional_t&lt;sizeof(T) &lt;= 4, uint64_t, __uint128_t&gt;;
+  static V inv(V x, V m) { return x &gt; 1 ? m - inv(m % x, x) * m / x : 1; }
+  make_unsigned_t&lt;T&gt; x;
+  mint() : x(0) {}
+  mint(auto y) : x(y % M) { x &gt;= M ? x += M : x; }
+  operator T() const { return x; }
+  mint operator-() const { return mint() -= *this; }
+  mint operator+(auto rhs) const { return mint(*this) += rhs; }
+  mint operator-(auto rhs) const { return mint(*this) -= rhs; }
+  mint operator*(auto rhs) const { return mint(*this) *= rhs; }
+  mint operator/(auto rhs) const { return mint(*this) /= rhs; }
+  mint &operator+=(mint rhs) { return (x += rhs.x) &gt;= M ? x -= M : x, *this; }
+  mint &operator-=(mint rhs) { return (x -= rhs.x) &gt;= M ? x += M : x, *this; }
+  mint &operator*=(mint rhs) { return x = x * V(rhs.x) % M, *this; }
+  mint &operator/=(mint rhs) { return x = x * inv(rhs.x, M) % M, *this; }
+  mint pow(auto y) const { // O(log y) | 0^(-inf,0] -&gt; 1
+    mint ans(1), base(*this);
+    for (auto e = y &lt; 0 ? ~y + __uint128_t(1) : +y; e; e &gt;&gt;= 1, base *= base) {
+      e & 1 ? ans *= base : ans;
+    }
+    return y &lt; 0 ? mint(1) /= ans : ans;
   }
-  return gcd(b, a % b);
-}</code></pre>
+};</code></pre>
         </div>
         <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
     </div>
 
     <!-- Template -->
     <div class="template-container">
-        <div class="template-label">LinkedList</div>
+        <div class="template-label">Linked List</div>
         <div class="code-container">
             <pre><code>template &lt;class T&gt;
 struct linked_list {
@@ -270,7 +289,96 @@ struct fenwick_tree {
             Typical Fenwick Tree.  Ensure that the binary operation passed to the constructor is a group operation and supply its inverse and zero.
         </div>
     </div>
+    
+    <!-- Template -->
+    <div class="template-container">
+        <div class="template-label">Segment Tree</div>
+        <div class="code-container">
+            <pre><code>// lazy range addition update, maximum query segtree adapted from https://cp-algorithms.com/data_structures/segment_tree.html
+struct segtree {
+  int n;
+  vector&lt;ll&gt; t;
+  vector&lt;int&gt; s;
+  vector&lt;ll&gt; lazy;
 
+  void build(vector&lt;ll&gt; &arr, int idx, int tl, int tr) {
+    if (tl == tr) {
+      s[idx] = tl;
+      t[idx] = arr[tl];
+    } else {
+      int tm = tl + (tr - tl) / 2;
+      build(arr, idx * 2, tl, tm);
+      build(arr, idx * 2 + 1, tm + 1, tr);
+      if (t[idx * 2] &gt;= t[idx * 2 + 1]) {
+        s[idx] = s[idx * 2];
+        t[idx] = t[idx * 2];
+      } else {
+        s[idx] = s[idx * 2 + 1];
+        t[idx] = t[idx * 2 + 1];
+      }
+    }
+  }
+
+  void push(int idx) {
+    t[idx * 2] += lazy[idx];
+    lazy[idx * 2] += lazy[idx];
+    t[idx * 2 + 1] += lazy[idx];
+    lazy[idx * 2 + 1] += lazy[idx];
+    lazy[idx] = 0;
+  }
+
+  void update(int idx, int tl, int tr, int l, int r, ll diff) {
+    if (l &gt; r) return;
+    if (l == tl && r == tr) {
+      t[idx] += diff;
+      lazy[idx] += diff;
+    } else {
+      push(idx);
+      int tm = tl + (tr - tl) / 2;
+      update(idx * 2, tl, tm, l, min(r, tm), diff);
+      update(idx * 2 + 1, tm + 1, tr, max(l, tm + 1), r, diff);
+      if (t[idx * 2] &gt;= t[idx * 2 + 1]) {
+        s[idx] = s[idx * 2];
+        t[idx] = t[idx * 2];
+      } else {
+        s[idx] = s[idx * 2 + 1];
+        t[idx] = t[idx * 2 + 1];
+      }
+    }
+  }
+
+  inline void update(int l, int r, ll diff) {
+    update(1, 0, n - 1, l, r, diff);
+  }
+
+  pair&lt;ll, int&gt; query(int idx, int tl, int tr, int l, int r) {
+    if (l &gt; r) return make_pair(LONG_LONG_MIN, -1);
+    if (l == tl && r == tr) return make_pair(t[idx], s[idx]);
+    push(idx);
+    int tm = tl + (tr - tl) / 2;
+    return max(query(idx * 2, tl, tm, l, min(r, tm)),
+               query(idx * 2 + 1, tm + 1, tr, max(l, tm + 1), r));
+  }
+
+  inline pair&lt;ll, int&gt; query(int l, int r) {
+    return query(1, 0, n - 1, l, r);
+  }
+
+  segtree(vector&lt;ll&gt; &arr) {
+    n = arr.size();
+    s = vector&lt;int&gt;(n * 4, 0);
+    t = vector&lt;ll&gt;(n * 4, 0);
+    lazy = vector&lt;ll&gt;(n * 4, 0);
+    build(arr, 1, 0, n - 1);
+  }
+};</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+        <div class="description">
+          Range update, maximum query segment tree.
+        </div>
+    </div>
+    
     <script>
         function copyCode(button) {
             const codeContainer = button.previousElementSibling;
