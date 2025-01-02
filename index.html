@@ -88,31 +88,34 @@ int main() {
     <div class="template-container">
         <div class="template-label">Modular Integer</div>
         <div class="code-container">
-            <pre><code>// copied from https://codeforces.com/blog/entry/134789
-template &lt;typename T, auto M&gt; struct mint {
-  using V = conditional_t&lt;sizeof(T) &lt;= 4, uint64_t, __uint128_t&gt;;
-  static V inv(V x, V m) { return x &gt; 1 ? m - inv(m % x, x) * m / x : 1; }
-  make_unsigned_t&lt;T&gt; x;
-  mint() : x(0) {}
-  mint(auto y) : x(y % M) { x &gt;= M ? x += M : x; }
-  operator T() const { return x; }
-  mint operator-() const { return mint() -= *this; }
-  mint operator+(auto rhs) const { return mint(*this) += rhs; }
-  mint operator-(auto rhs) const { return mint(*this) -= rhs; }
-  mint operator*(auto rhs) const { return mint(*this) *= rhs; }
-  mint operator/(auto rhs) const { return mint(*this) /= rhs; }
-  mint &operator+=(mint rhs) { return (x += rhs.x) &gt;= M ? x -= M : x, *this; }
-  mint &operator-=(mint rhs) { return (x -= rhs.x) &gt;= M ? x += M : x, *this; }
-  mint &operator*=(mint rhs) { return x = x * V(rhs.x) % M, *this; }
-  mint &operator/=(mint rhs) { return x = x * inv(rhs.x, M) % M, *this; }
-  mint pow(auto y) const { // O(log y) | 0^(-inf,0] -&gt; 1
-    mint ans(1), base(*this);
-    for (auto e = y &lt; 0 ? ~y + __uint128_t(1) : +y; e; e &gt;&gt;= 1, base *= base) {
-      e & 1 ? ans *= base : ans;
-    }
-    return y &lt; 0 ? mint(1) /= ans : ans;
-  }
-};</code></pre>
+            <pre><code>// copied from https://usaco.guide/gold/modular?lang=cpp
+struct mint {
+  int v;
+  explicit operator int() const { return v; }
+  mint() { v = 0; }
+  mint(long long _v) : v(_v % MOD) { v += (v < 0) * MOD; }
+};
+mint &operator+=(mint &a, mint b) {
+  if ((a.v += b.v) >= MOD) a.v -= MOD;
+  return a;
+}
+mint &operator-=(mint &a, mint b) {
+  if ((a.v -= b.v) < 0) a.v += MOD;
+  return a;
+}
+mint operator+(mint a, mint b) { return a += b; }
+mint operator-(mint a, mint b) { return a -= b; }
+mint operator*(mint a, mint b) { return mint((long long)a.v * b.v); }
+mint &operator*=(mint &a, mint b) { return a = a * b; }
+mint pow(mint a, long long p) {
+  assert(p >= 0);
+  return p == 0 ? 1 : pow(a * a, p / 2) * (p & 1 ? a : 1);
+}
+mint inv(mint a) {
+  assert(a.v != 0);
+  return pow(a, MOD - 2);
+}
+mint operator/(mint a, mint b) { return a * inv(b); }</code></pre>
         </div>
         <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
     </div>
