@@ -292,10 +292,70 @@ struct fenwick_tree {
             Typical Fenwick Tree.  Ensure that the binary operation passed to the constructor is a group operation and supply its inverse and zero.
         </div>
     </div>
+
+
+    <!-- Template -->
+    <div class="template-container">
+        <div class="template-label">Point Update Segment Tree</div>
+        <div class="code-container">
+            <pre><code>struct segtree {
+  vector<info> t;
+  int n;
+
+  segtree(const vector<info> &a) {
+    t = vector<info>(4 * a.size());
+    n = a.size();
+    build(1, 0, n - 1, a);
+  }
+
+  void build(int idx, int tl, int tr, const vector<info> &a) {
+    if (tl == tr) {
+      t[idx] = a[tl];
+      return;
+    }
+    int tm = tl + (tr - tl) / 2;
+    build(2 * idx, tl, tm, a);
+    build(2 * idx + 1, tm + 1, tr, a);
+    t[idx] = t[2 * idx] + t[2 * idx + 1];
+  }
+
+  inline void update(int m, const info &a) {
+    update(1, 0, n - 1, m, a);
+  }
+
+  void update(int idx, int tl, int tr, int m, const info &a) {
+    if (m < tl || m > tr) return;
+    if (tl == tr) {
+      t[idx] = a;
+      return;
+    }
+    int tm = tl + (tr - tl) / 2;
+    update(2 * idx, tl, tm, m, a);
+    update(2 * idx + 1, tm + 1, tr, m, a);
+    t[idx] = t[2 * idx] + t[2 * idx + 1];
+  }
+
+  inline info query(int l, int r) {
+    return query(1, 0, n - 1, l, r);
+  }
+
+  info query(int idx, int tl, int tr, int l, int r) {
+    if (r < l) return info();
+    if (tl == l && tr == r) return t[idx];
+    int tm = tl + (tr - tl) / 2;
+    return query(2 * idx, tl, tm, l, min(tm, r)) + query(2 * idx + 1, tm + 1, tr, max(tm + 1, l), r);
+  }
+};</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+        <div class="description">
+          Point update segment tree.  Make sure to define the info class and overload its addition operator.
+        </div>
+    </div>
     
     <!-- Template -->
     <div class="template-container">
-        <div class="template-label">Segment Tree</div>
+        <div class="template-label">Range Update Segment Tree</div>
         <div class="code-container">
             <pre><code>// lazy range addition update, maximum query segtree adapted from https://cp-algorithms.com/data_structures/segment_tree.html
 struct segtree {
