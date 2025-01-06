@@ -88,48 +88,30 @@ int main() {
     <div class="template-container">
         <div class="template-label">Modular Integer</div>
         <div class="code-container">
-            <pre><code>// copied from https://usaco.guide/gold/modular?lang=cpp
-struct mint {
-  int v;
-  explicit operator int() const { return v; }
-  mint() { v = 0; }
-  mint(long long _v) : v(_v % MOD) { v += (v < 0) * MOD; }
-};
-mint &operator+=(mint &a, mint b) {
-  if ((a.v += b.v) >= MOD) a.v -= MOD;
-  return a;
+            <pre><code>// copied from KACTL
+ll euclid(ll a, ll b, ll &x, ll &y) {
+  if (!b) return x = 1, y = 0, a;
+  ll d = euclid(b, a % b, y, x);
+  return y -= a/b * x, d;
 }
-mint &operator-=(mint &a, mint b) {
-  if ((a.v -= b.v) < 0) a.v += MOD;
-  return a;
-}
-mint operator+(mint a, mint b) { return a += b; }
-mint operator-(mint a, mint b) { return a -= b; }
-mint operator*(mint a, mint b) { return mint((long long)a.v * b.v); }
-mint &operator*=(mint &a, mint b) { return a = a * b; }
-mint pow(mint a, long long p) {
-  assert(p >= 0);
-  return p == 0 ? 1 : pow(a * a, p / 2) * (p & 1 ? a : 1);
-}
-mint inv(mint a) {
-  assert(a.v != 0);
-  return pow(a, MOD - 2);
-}
-mint operator/(mint a, mint b) { return a * inv(b); }</code></pre>
-        </div>
-        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
-    </div>
 
-    <!-- Template -->
-    <div class="template-container">
-        <div class="template-label">Linked List</div>
-        <div class="code-container">
-            <pre><code>template &lt;class T&gt;
-struct linked_list {
-  T val;
-  linked_list &prev, &next;
-  linked_list() : prev(nullptr), next(nullptr) {};
-  linked_list(T v) : val(v), prev(nullptr), next(nullptr) {};
+const ll mod = 1e9 + 7; // change to something else
+struct mint {
+  ll x;
+  mint(ll xx) : x(xx) {}
+  mint operator+(mint b) { return mint((x + b.x) % mod); }
+  mint operator-(mint b) { return mint((x - b.x + mod) % mod); }
+  mint operator*(mint b) { return mint((x * b.x) % mod); }
+  mint operator/(mint b) { return *this * invert(b); }
+  mint invert(mint a) {
+    ll x, y, g = euclid(a.x, mod, x, y);
+    assert(g == 1); return mint((x + mod) % mod);
+  }
+  mint operator^(ll e) {
+    if (!e) return mint(1);
+    mint r = *this ^ (e / 2); r = r * r;
+    return e&1 ? *this * r : r;
+  }
 };</code></pre>
         </div>
         <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
