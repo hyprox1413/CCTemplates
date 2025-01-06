@@ -119,6 +119,20 @@ struct mint {
 
     <!-- Template -->
     <div class="template-container">
+        <div class="template-label">Modular Integer</div>
+        <div class="code-container">
+            <pre><code>struct linked_list {
+  T val;
+  linked_list &prev, &next;
+  linked_list() : prev(nullptr), next(nullptr) {};
+  linked_list(T v) : val(v), prev(nullptr), next(nullptr) {};
+};</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
         <div class="template-label">Disjoint Set Union</div>
         <div class="code-container">
             <pre><code>ll find(ll p, vector&lt;ll&gt; &id) {
