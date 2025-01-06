@@ -121,12 +121,35 @@ struct mint {
     <div class="template-container">
         <div class="template-label">Linked List</div>
         <div class="code-container">
-            <pre><code>template &lt;class T&gt;
-  struct linked_list {
+            <pre><code>template &lt;class T&gt; struct linked_list_node {
   T val;
-  linked_list &prev, &next;
-  linked_list() : prev(nullptr), next(nullptr) {};
-  linked_list(T v) : val(v), prev(nullptr), next(nullptr) {};
+  linked_list_node *prev, *next;
+  linked_list_node() : prev(nullptr), next(nullptr) {};
+  linked_list_node(T v) : val(v), prev(nullptr), next(nullptr) {};
+};
+
+template &lt;class T&gt; struct linked_list {
+  linked_list_node&lt;T&gt; *head, *tail;
+  linked_list() {
+    head = nullptr;
+    tail = nullptr;
+  };
+
+  void prepend(T v) {
+    linked_list_node&lt;T&gt; *new_node = new linked_list_node&lt;T&gt;(v);
+    new_node-&gt;next = head;
+    if (head) head-&gt;prev = new_node;
+    else tail = new_node;
+    head = new_node;
+  }
+
+  void append(T v) {
+    linked_list_node&lt;T&gt; *new_node = new linked_list_node&lt;T&gt;(v);
+    new_node-&gt;prev = tail;
+    if (tail) tail-&gt;next = new_node;
+    else head = new_node;
+    tail = new_node;
+  }
 };</code></pre>
         </div>
         <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
