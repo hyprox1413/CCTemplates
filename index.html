@@ -319,16 +319,16 @@ struct fenwick_tree {
         <div class="template-label">Point Update Segment Tree</div>
         <div class="code-container">
             <pre><code>struct segtree {
-  vector<info> t;
+  vector&lt;info&gt; t;
   int n;
 
-  segtree(const vector<info> &a) {
-    t = vector<info>(4 * a.size());
+  segtree(const vector&lt;info&gt; &a) {
+    t = vector&lt;info&gt;(4 * a.size());
     n = a.size();
     build(1, 0, n - 1, a);
   }
 
-  void build(int idx, int tl, int tr, const vector<info> &a) {
+  void build(int idx, int tl, int tr, const vector&lt;info&gt; &a) {
     if (tl == tr) {
       t[idx] = a[tl];
       return;
@@ -344,7 +344,7 @@ struct fenwick_tree {
   }
 
   void update(int idx, int tl, int tr, int m, const info &a) {
-    if (m < tl || m > tr) return;
+    if (m &lt; tl || m &gt; tr) return;
     if (tl == tr) {
       t[idx] = a;
       return;
@@ -360,7 +360,7 @@ struct fenwick_tree {
   }
 
   info query(int idx, int tl, int tr, int l, int r) {
-    if (r < l) return info();
+    if (r &lt; l) return info();
     if (tl == l && tr == r) return t[idx];
     int tm = tl + (tr - tl) / 2;
     return query(2 * idx, tl, tm, l, min(tm, r)) + query(2 * idx + 1, tm + 1, tr, max(tm + 1, l), r);
