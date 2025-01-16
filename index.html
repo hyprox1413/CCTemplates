@@ -143,12 +143,26 @@ template &lt;class T&gt; struct linked_list {
     head = new_node;
   }
 
+  void prepend(linked_list&lt;T&gt; list) {
+    list.tail-&gt;next = head;
+    if (head) head-&gt;prev = list.tail;
+    else tail = list.tail;
+    head = list.head;
+  }
+
   void append(T v) {
     linked_list_node&lt;T&gt; *new_node = new linked_list_node&lt;T&gt;(v);
     new_node-&gt;prev = tail;
     if (tail) tail-&gt;next = new_node;
     else head = new_node;
     tail = new_node;
+  }
+
+  void append(linked_list&lt;T&gt; list) {
+    list.head-&gt;prev = tail;
+    if (tail) tail-&gt;next = list.head;
+    else head = list.head;
+    tail = list.tail;
   }
 };</code></pre>
         </div>
