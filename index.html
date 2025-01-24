@@ -172,6 +172,23 @@ template &lt;class T&gt; struct linked_list {
 
     <!-- Template -->
     <div class="template-container">
+        <div class="template-label">Order Statistic Tree</div>
+        <div class="code-container">
+            <pre><code>#include &lt;ext/pb_ds/assoc_container.hpp&gt;
+#include &lt;ext/pb_ds/tree_policy.hpp&gt;
+using namespace __gnu_pbds;
+
+typedef tree&lt;ll, null_type, less&lt;ll&gt;, rb_tree_tag, tree_order_statistics_node_update&gt; set;
+typedef tree&lt;ll, null_type, less_equal&lt;ll&gt;, rb_tree_tag, tree_order_statistics_node_update&gt; multiset;</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+        <div class="description">
+            DSU with path compression and union-by-size.  id holds the representatives of each set.  If id[x] is negative, it means that x is the representative and the set is of size -id[x]. 
+        </div>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
         <div class="template-label">Disjoint Set Union</div>
         <div class="code-container">
             <pre><code>ll find(ll p, vector&lt;ll&gt; &id) {
