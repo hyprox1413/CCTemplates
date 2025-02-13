@@ -311,8 +311,7 @@ struct sparse_table {
     <div class="template-container">
         <div class="template-label">Fenwick Tree</div>
         <div class="code-container">
-            <pre><code>template &lt;class T&gt;
-struct fenwick_tree {
+            <pre><code>template &lt;class T&gt; struct fenwick_tree {
   T (*op) (T a, T b);
   T (*inv) (T a);
   T zero;
@@ -322,6 +321,7 @@ struct fenwick_tree {
     if (idx &lt; 0) {
       return zero;
     }
+    if (idx &gt;= size()) idx = size() - 1;
     T result = bit[idx];
     for (int i = (idx & idx + 1) - 1; i &gt;= 0; i = (i & i + 1) - 1) {
       result = op(result, bit[i]);
@@ -356,8 +356,30 @@ struct fenwick_tree {
     }
   }
 
-  int size() {
+  unsigned int size() {
     return bit.size();
+  }
+
+  int lower_bound(T a, ll (*comp) (T, T)) {
+    int res = 0;
+    for (int i = 1 &lt;&lt; (bit_width(size()) - 1); i &gt; 0; i &gt;&gt;= 1) {
+      if (res + i - 1 &lt; size() && comp(bit[res + i - 1], a) &lt; 0) {
+        res += i;
+        a = op(a, inv(bit[res - 1]));
+      }
+    }
+    return res;
+  }
+
+  int upper_bound(T a, ll (*comp) (T, T)) {
+    int res = 0;
+    for (int i = 1 &lt;&lt; (bit_width(size()) - 1); i &gt; 0; i &gt;&gt;= 1) {
+      if (res + i - 1 &lt; size() && comp(bit[res + i - 1], a) &lt;= 0) {
+        res += i;
+        a = op(a, inv(bit[res - 1]));
+      }
+    }
+    return res;
   }
 
   fenwick_tree(vector&lt;T&gt; arr, T(*o) (T a, T b), T(*iv) (T a), T z) {
@@ -370,7 +392,11 @@ struct fenwick_tree {
       add(i, arr[i]);
     }
   }
-};</code></pre>
+};
+
+ll add(ll a, ll b) { return a + b; }
+ll neg(ll a) { return -a; }
+ll diff(ll a, ll b) { return a - b; }</code></pre>
         </div>
         <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
         <div class="description">
