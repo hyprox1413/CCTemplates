@@ -409,11 +409,11 @@ ll diff(ll a, ll b) { return a - b; }</code></pre>
     <div class="template-container">
         <div class="template-label">Point Update Segment Tree</div>
         <div class="code-container">
-            <pre><code>struct segtree {
+            <pre><code>struct segment_tree {
   vector&lt;info&gt; t;
   int n;
 
-  segtree(const vector&lt;info&gt; &a) {
+  segment_tree(const vector&lt;info&gt; &a) {
     t = vector&lt;info&gt;(4 * a.size());
     n = a.size();
     build(1, 0, n - 1, a);
@@ -468,8 +468,8 @@ ll diff(ll a, ll b) { return a - b; }</code></pre>
     <div class="template-container">
         <div class="template-label">Range Update Segment Tree</div>
         <div class="code-container">
-            <pre><code>// lazy range addition update, maximum query segtree adapted from https://cp-algorithms.com/data_structures/segment_tree.html
-struct segtree {
+            <pre><code>// lazy range addition update, maximum query segment tree adapted from https://cp-algorithms.com/data_structures/segment_tree.html
+struct segment_tree {
   int n;
   vector&lt;ll&gt; t;
   vector&lt;int&gt; s;
@@ -538,7 +538,7 @@ struct segtree {
     return query(1, 0, n - 1, l, r);
   }
 
-  segtree(vector&lt;ll&gt; &arr) {
+  segment_tree(vector&lt;ll&gt; &arr) {
     n = arr.size();
     s = vector&lt;int&gt;(n * 4, 0);
     t = vector&lt;ll&gt;(n * 4, 0);
@@ -550,6 +550,138 @@ struct segtree {
         <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
         <div class="description">
           Range update, maximum query segment tree.
+        </div>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
+        <div class="template-label">Li Chao Tree</div>
+        <div class="code-container">
+            <pre><code>struct line {
+  ll a, b;
+ 
+  ll val(ll x) {
+    return a * x + b;
+  }
+};
+ 
+struct node {
+  node * left = NULL, * right = NULL;
+  line v;
+  bool has_line = false;
+  ll l, r;
+ 
+  node(ll l, ll r) {
+    this-&gt;l = l;
+    this-&gt;r = r;
+  }
+ 
+  void ensure_left() {
+    if (!left && l &lt; r) {
+      ll m = l + (r - l) / 2;
+      left = new node(l, m);
+      if (has_line) {
+        left-&gt;v = v;
+      }
+    }
+  }
+ 
+  void ensure_right() {
+    if (!right && l &lt; r) {
+      ll m = l + (r - l) / 2;
+      right = new node(m + 1, r);
+      if (has_line) {
+        right-&gt;has_line = true;
+        right-&gt;v = v;
+      }
+    }
+  }
+};
+ 
+struct li_chao_tree {
+  ll ml, mr;
+  node * root = NULL;
+ 
+  li_chao_tree(ll l, ll r) {
+    ml = l;
+    mr = r;
+    root = new node(l, r);
+  };
+ 
+  inline void update(line v, ll l, ll r) {
+    update(root, v, ml, mr, l, r);
+  }
+ 
+  void update(node * cur, line v, ll tl, ll tr, ll l, ll r) {
+    if (l &gt; r) return;
+    if (tl == l && tr == r) {
+      update_node(cur, v);
+    } else {
+      ll tm = tl + (tr - tl) / 2;
+      if (l &lt;= tm) {
+        cur-&gt;ensure_left();
+        update(cur-&gt;left, v, tl, tm, l, min(tm, r));
+      }
+      if (r &gt; tm) {
+        cur-&gt;ensure_right();
+        update(cur-&gt;right, v, tm + 1, tr, max(tm + 1, l), r);
+      }
+    }
+  }
+ 
+  void update_node(node * cur, line v) {
+    ll tl = cur-&gt;l, tr = cur-&gt;r;
+    ll tm = tl + (tr - tl) / 2;
+ 
+    if (!cur-&gt;has_line) {
+      // currently no line, replace
+      cur-&gt;has_line = true;
+      cur-&gt;v = v;
+      return;
+    }
+ 
+    // there is already a line
+    bool gl = v.val(tl) &gt; cur-&gt;v.val(tl), gm = v.val(tm) &gt; cur-&gt;v.val(tm), gr = v.val(tr) &gt; cur-&gt;v.val(tr);
+    if (gl && gr) {
+      cur-&gt;has_line = true;
+      cur-&gt;v = v;
+      return;
+    }
+    if (!gl && !gr) return;
+ 
+    if (gm) swap(cur-&gt;v, v);
+    if (gl != gm) {
+      cur-&gt;ensure_left();
+      update_node(cur-&gt;left, v);
+    } else if (gr != gm) {
+      cur-&gt;ensure_right();
+      update_node(cur-&gt;right, v);
+    }
+  }
+ 
+  inline ll query(ll x) {
+    return query(root, x);
+  }
+ 
+  ll query(node * cur, ll x) {
+    ll tl = cur-&gt;l, tr = cur-&gt;r;
+    ll tm = tl + (tr - tl) / 2;
+    ll ans = LONG_LONG_MIN;
+    if (cur-&gt;has_line) {
+      ans = cur-&gt;v.val(x);
+    }
+    if (x &lt;= tm && cur-&gt;left) {
+      ans = max(ans, query(cur-&gt;left, x));
+    } else if (x &gt; tm && cur-&gt;right) {
+      ans = max(ans, query(cur-&gt;right, x));
+    }
+    return ans;
+  }
+};</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+        <div class="description">
+          Li Chao Tree implemented as a dynamic segment tree on lines.
         </div>
     </div>
     
