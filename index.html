@@ -559,23 +559,23 @@ struct segment_tree {
         <div class="code-container">
             <pre><code>struct line {
   ll a, b;
- 
+
   ll val(ll x) {
     return a * x + b;
   }
 };
- 
+
 struct node {
   node * left = NULL, * right = NULL;
   line v;
   bool has_line = false;
   ll l, r;
- 
+
   node(ll l, ll r) {
     this-&gt;l = l;
     this-&gt;r = r;
   }
- 
+
   void ensure_left() {
     if (!left && l &lt; r) {
       ll m = l + (r - l) / 2;
@@ -585,7 +585,7 @@ struct node {
       }
     }
   }
- 
+
   void ensure_right() {
     if (!right && l &lt; r) {
       ll m = l + (r - l) / 2;
@@ -597,26 +597,26 @@ struct node {
     }
   }
 };
- 
+
 struct li_chao_tree {
   ll ml, mr;
   node * root = NULL;
- 
+
   li_chao_tree(ll l, ll r) {
     ml = l;
     mr = r;
     root = new node(l, r);
   };
- 
+
   inline void update(line v, ll l, ll r) {
     update(root, v, ml, mr, l, r);
   }
- 
+
   void update(node * cur, line v, ll tl, ll tr, ll l, ll r) {
     if (l &gt; r) return;
     if (tl == l && tr == r) {
       update_node(cur, v);
-    } else {
+    } else if (tl &lt; tr) {
       ll tm = tl + (tr - tl) / 2;
       if (l &lt;= tm) {
         cur-&gt;ensure_left();
@@ -628,18 +628,18 @@ struct li_chao_tree {
       }
     }
   }
- 
+
   void update_node(node * cur, line v) {
     ll tl = cur-&gt;l, tr = cur-&gt;r;
     ll tm = tl + (tr - tl) / 2;
- 
+
     if (!cur-&gt;has_line) {
       // currently no line, replace
       cur-&gt;has_line = true;
       cur-&gt;v = v;
       return;
     }
- 
+
     // there is already a line
     bool gl = v.val(tl) &gt; cur-&gt;v.val(tl), gm = v.val(tm) &gt; cur-&gt;v.val(tm), gr = v.val(tr) &gt; cur-&gt;v.val(tr);
     if (gl && gr) {
@@ -648,7 +648,7 @@ struct li_chao_tree {
       return;
     }
     if (!gl && !gr) return;
- 
+
     if (gm) swap(cur-&gt;v, v);
     if (gl != gm) {
       cur-&gt;ensure_left();
@@ -658,11 +658,11 @@ struct li_chao_tree {
       update_node(cur-&gt;right, v);
     }
   }
- 
+
   inline ll query(ll x) {
     return query(root, x);
   }
- 
+
   ll query(node * cur, ll x) {
     ll tl = cur-&gt;l, tr = cur-&gt;r;
     ll tm = tl + (tr - tl) / 2;
