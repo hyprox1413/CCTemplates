@@ -205,6 +205,92 @@ template &lt;class T&gt; struct linked_list {
 
     <!-- Template -->
     <div class="template-container">
+        <div class="template-label">Polynomial String Hashing</div>
+        <div class="code-container">
+            <pre><code>// mint copied from KACTL
+ll euclid(ll a, ll b, ll &x, ll &y) {
+  if (!b) return x = 1, y = 0, a;
+  ll d = euclid(b, a % b, y, x);
+  return y -= a / b * x, d;
+}
+
+template&lt;ll modgt; struct mint {
+  ll x;
+
+  mint(ll xx) : x(xx) {
+  }
+
+  mint operator+(mint b) { return mint((x + b.x) % mod); }
+  mint operator-(mint b) { return mint((x - b.x + mod) % mod); }
+  mint operator*(mint b) { return mint((x * b.x) % mod); }
+  mint operator/(mint b) { return *this * invert(b); }
+
+  void operator+=(mint b) { x = (x + b.x) % mod; }
+  void operator-=(mint b) { x = (x - b.x + mod) % mod; }
+  void operator*=(mint b) { x = (x * b.x) % mod; }
+  void operator/=(mint b) { x = *this * invert(b); }
+
+  bool operator==(const mint b) const { return this-gt;x == b.x; }
+
+  mint invert(mint a) {
+    ll x, y, g = euclid(a.x, mod, x, y);
+    assert(g == 1);
+    return mint((x + mod) % mod);
+  }
+
+  mint operator^(ll e) {
+    if (!e) return mint(1);
+    mint r = *this ^ (e / 2);
+    r = r * r;
+    return e & 1 ? *this * r : r;
+  }
+};
+
+const ll MOD1 = 1e9 + 7, MOD2 = 1e9 + 9;
+const mint&lt;MOD1gt; POLY_HASH_COEF1 = 31;
+const mint&lt;MOD2gt; POLY_HASH_COEF2 = 37;
+
+ll default_poly_hash_translate(char c) {
+  return c;
+}
+
+struct poly_hash {
+  string str;
+  vector&lt;mint&lt;MOD1gt;gt; pre1;
+  vector&lt;mint&lt;MOD2gt;gt; pre2;
+  function&lt;ll(char)gt; translate;
+
+  poly_hash(string &s, function&lt;ll(char)gt; *t = NULL) {
+    str = s;
+    pre1 = vector&lt;mint&lt;MOD1gt;gt;(sz(str) + 1, 0);
+    pre2 = vector&lt;mint&lt;MOD2gt;gt;(sz(str) + 1, 0);
+    if (!t) {
+      translate = default_poly_hash_translate;
+    } else {
+      translate = *t;
+    }
+
+    rep(i, 0, sz(str)) {
+      pre1[i + 1] = pre1[i] + (mint(POLY_HASH_COEF1) ^ i) * translate(str[i]);
+      pre2[i + 1] = pre2[i] + (mint(POLY_HASH_COEF2) ^ i) * translate(str[i]);
+    }
+  }
+
+  pair&lt;mint&lt;MOD1gt;, mint&lt;MOD2gt;gt; hash(int l, int r) {
+    return { (pre1[r + 1] - pre1[l]) / (mint(POLY_HASH_COEF1) ^ l), (pre2[r + 1] - pre2[l]) / (mint(POLY_HASH_COEF2) ^ l) };
+  }
+};
+
+pair&lt;mint&lt;MOD1gt;, mint&lt;MOD2gt;gt; combine_hashes(poly_hash &phash1, poly_hash &phash2, int l1, int r1, int l2, int r2) {
+  pair&lt;mint&lt;MOD1gt;, mint&lt;MOD2gt;gt; hash1 = phash1.hash(l1, r1), hash2 = phash2.hash(l2, r2);
+  return { hash1.first + hash2.first * (mint(POLY_HASH_COEF1) ^ (r1 - l1 + 1)), hash1.second + hash2.second * (mint(POLY_HASH_COEF2) ^ (r1 - l1 + 1)) };
+}</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
         <div class="template-label">Order Statistic Tree</div>
         <div class="code-container">
             <pre><code>#include &lt;ext/pb_ds/assoc_container.hpp&gt;
