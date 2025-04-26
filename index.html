@@ -214,7 +214,7 @@ ll euclid(ll a, ll b, ll &x, ll &y) {
   return y -= a / b * x, d;
 }
 
-template&lt;ll modgt; struct mint {
+template&lt;ll mod&gt; struct mint {
   ll x;
 
   mint(ll xx) : x(xx) {
@@ -230,7 +230,7 @@ template&lt;ll modgt; struct mint {
   void operator*=(mint b) { x = (x * b.x) % mod; }
   void operator/=(mint b) { x = *this * invert(b); }
 
-  bool operator==(const mint b) const { return this-gt;x == b.x; }
+  bool operator==(const mint b) const { return this-&gt;x == b.x; }
 
   mint invert(mint a) {
     ll x, y, g = euclid(a.x, mod, x, y);
@@ -247,8 +247,8 @@ template&lt;ll modgt; struct mint {
 };
 
 const ll MOD1 = 1e9 + 7, MOD2 = 1e9 + 9;
-const mint&lt;MOD1gt; POLY_HASH_COEF1 = 31;
-const mint&lt;MOD2gt; POLY_HASH_COEF2 = 37;
+const mint&lt;MOD1&gt; POLY_HASH_COEF1 = 31;
+const mint&lt;MOD2&gt; POLY_HASH_COEF2 = 37;
 
 ll default_poly_hash_translate(char c) {
   return c;
@@ -256,14 +256,14 @@ ll default_poly_hash_translate(char c) {
 
 struct poly_hash {
   string str;
-  vector&lt;mint&lt;MOD1gt;gt; pre1;
-  vector&lt;mint&lt;MOD2gt;gt; pre2;
-  function&lt;ll(char)gt; translate;
+  vector&lt;mint&lt;MOD1&gt;&gt; pre1;
+  vector&lt;mint&lt;MOD2&gt;&gt; pre2;
+  function&lt;ll(char)&gt; translate;
 
-  poly_hash(string &s, function&lt;ll(char)gt; *t = NULL) {
+  poly_hash(string &s, function&lt;ll(char)&gt; *t = NULL) {
     str = s;
-    pre1 = vector&lt;mint&lt;MOD1gt;gt;(sz(str) + 1, 0);
-    pre2 = vector&lt;mint&lt;MOD2gt;gt;(sz(str) + 1, 0);
+    pre1 = vector&lt;mint&lt;MOD1&gt;&gt;(sz(str) + 1, 0);
+    pre2 = vector&lt;mint&lt;MOD2&gt;&gt;(sz(str) + 1, 0);
     if (!t) {
       translate = default_poly_hash_translate;
     } else {
@@ -276,13 +276,13 @@ struct poly_hash {
     }
   }
 
-  pair&lt;mint&lt;MOD1gt;, mint&lt;MOD2gt;gt; hash(int l, int r) {
+  pair&lt;mint&lt;MOD1&gt;, mint&lt;MOD2&gt;&gt; hash(int l, int r) {
     return { (pre1[r + 1] - pre1[l]) / (mint(POLY_HASH_COEF1) ^ l), (pre2[r + 1] - pre2[l]) / (mint(POLY_HASH_COEF2) ^ l) };
   }
 };
 
-pair&lt;mint&lt;MOD1gt;, mint&lt;MOD2gt;gt; combine_hashes(poly_hash &phash1, poly_hash &phash2, int l1, int r1, int l2, int r2) {
-  pair&lt;mint&lt;MOD1gt;, mint&lt;MOD2gt;gt; hash1 = phash1.hash(l1, r1), hash2 = phash2.hash(l2, r2);
+pair&lt;mint&lt;MOD1&gt;, mint&lt;MOD2&gt;&gt; combine_hashes(poly_hash &phash1, poly_hash &phash2, int l1, int r1, int l2, int r2) {
+  pair&lt;mint&lt;MOD1&gt;, mint&lt;MOD2&gt;&gt; hash1 = phash1.hash(l1, r1), hash2 = phash2.hash(l2, r2);
   return { hash1.first + hash2.first * (mint(POLY_HASH_COEF1) ^ (r1 - l1 + 1)), hash1.second + hash2.second * (mint(POLY_HASH_COEF2) ^ (r1 - l1 + 1)) };
 }</code></pre>
         </div>
