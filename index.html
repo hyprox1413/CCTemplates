@@ -318,25 +318,31 @@ typedef tree&lt;ll, null_type, less_equal&lt;ll&gt;, rb_tree_tag, tree_order_sta
     <div class="template-container">
         <div class="template-label">Disjoint Set Union</div>
         <div class="code-container">
-            <pre><code>ll find(ll p, vector&lt;ll&gt; &id) {
-  if (id[p] &lt 0) {
-    return p;
+            <pre><code>int find(int p, vi &id) {
+  int idp = p;
+  while (id[idp] >= 0) {
+    idp = id[idp];
   }
-  return id[p] = find(id[p], id);
+  while (id[p] >= 0) {
+    ll temp = id[p];
+    id[p] = idp;
+    p = temp;
+  }
+  return idp;
 }
 
-ll size(ll p, vector&ltll&gt; &id) {
-  ll idp = find(p, id);
+int size(int p, vi &id) {
+  int idp = find(p, id);
   return -id[idp];
 }
 
-void unite(ll p, ll q, vector&ltll&gt; &id) {
-  ll idp = find(p, id);
-  ll idq = find(q, id);
+void unite(int p, int q, vi &id) {
+  int idp = find(p, id);
+  int idq = find(q, id);
   if (idp == idq) {
     return;
   }
-  if (id[idp] &lt id[idq]) {
+  if (id[idp] < id[idq]) {
     id[idq] = id[idq] + id[idp];
     id[idp] = idq;
     return;
