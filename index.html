@@ -164,9 +164,9 @@ bool isPrime(ull n) {
         <div class="template-label">Tarjan's Algorithm</div>
         <div class="code-container">
             <pre><code>vll discovery(N, -1), lowlink(N, -1), ancestry;
-vector<bool> onStack(N, false);
+vector&lt;bool&gt; onStack(N, false);
 ll tarjIdx = 0;
-auto tarjans = [&](auto tarjans, ll u) -> void {
+auto tarjans = [&](auto tarjans, ll u) -&gt; void {
   discovery[u] = tarjIdx;
   lowlink[u] = tarjIdx;
   tarjIdx++;
@@ -174,7 +174,7 @@ auto tarjans = [&](auto tarjans, ll u) -> void {
   onStack[u] = true;
 
   for (const auto &v : adjList[u]) {
-    if (discovery[v] < 0) {
+    if (discovery[v] &lt; 0) {
       tarjans(tarjans, v);
       lowlink[u] = min(lowlink[u], lowlink[v]);
     } else if (onStack[v]) {
@@ -183,7 +183,7 @@ auto tarjans = [&](auto tarjans, ll u) -> void {
   }
 
   if (discovery[u] == lowlink[u]) {
-    set<ll> scc;
+    set&lt;ll&gt; scc;
     ll v = -1;
     while (v != u) {
       v = ancestry.back();
