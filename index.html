@@ -161,54 +161,44 @@ bool isPrime(ull n) {
 
     <!-- Template -->
     <div class="template-container">
-        <div class="template-label">Linked List</div>
+        <div class="template-label">Tarjan's Algorithm</div>
         <div class="code-container">
-            <pre><code>template &lt;class T&gt; struct linked_list_node {
-  T val;
-  linked_list_node *prev, *next;
-  linked_list_node() : prev(nullptr), next(nullptr) {};
-  linked_list_node(T v) : val(v), prev(nullptr), next(nullptr) {};
-};
+            <pre><code>vll discovery(N, -1), lowlink(N, -1), ancestry;
+vector<bool> onStack(N, false);
+ll tarjIdx = 0;
+auto tarjans = [&](auto tarjans, ll u) -> void {
+  discovery[u] = tarjIdx;
+  lowlink[u] = tarjIdx;
+  tarjIdx++;
+  ancestry.push_back(u);
+  onStack[u] = true;
 
-template &lt;class T&gt; struct linked_list {
-  linked_list_node&lt;T&gt; *head, *tail;
-  linked_list() {
-    head = nullptr;
-    tail = nullptr;
-  };
-
-  void prepend(T v) {
-    linked_list_node&lt;T&gt; *new_node = new linked_list_node&lt;T&gt;(v);
-    new_node-&gt;next = head;
-    if (head) head-&gt;prev = new_node;
-    else tail = new_node;
-    head = new_node;
+  for (const auto &v : adjList[u]) {
+    if (discovery[v] < 0) {
+      tarjans(tarjans, v);
+      lowlink[u] = min(lowlink[u], lowlink[v]);
+    } else if (onStack[v]) {
+      lowlink[u] = min(lowlink[u], lowlink[v]);
+    }
   }
 
-  void prepend(linked_list&lt;T&gt; list) {
-    list.tail-&gt;next = head;
-    if (head) head-&gt;prev = list.tail;
-    else tail = list.tail;
-    head = list.head;
-  }
-
-  void append(T v) {
-    linked_list_node&lt;T&gt; *new_node = new linked_list_node&lt;T&gt;(v);
-    new_node-&gt;prev = tail;
-    if (tail) tail-&gt;next = new_node;
-    else head = new_node;
-    tail = new_node;
-  }
-
-  void append(linked_list&lt;T&gt; list) {
-    list.head-&gt;prev = tail;
-    if (tail) tail-&gt;next = list.head;
-    else head = list.head;
-    tail = list.tail;
+  if (discovery[u] == lowlink[u]) {
+    set<ll> scc;
+    ll v = -1;
+    while (v != u) {
+      v = ancestry.back();
+      ancestry.pop_back();
+      onStack[v] = false;
+      scc.insert(v);
+    }
+    handleScc(scc);
   }
 };</code></pre>
         </div>
         <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+        <div class="description">
+          Supply a handleScc function and make sure to call tarjans(tarjans, u) on all vertices u.
+        </div>
     </div>
 
     <!-- Template -->
@@ -295,6 +285,9 @@ pair&lt;mint&lt;MOD1&gt;, mint&lt;MOD2&gt;&gt; combine_hashes(poly_hash &phash1,
 }</code></pre>
         </div>
         <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+        <div class="description">
+          Robust polynomial string hashing using two different moduli. combine_hashes finds the hash of the concatenation of two hashed substrings.
+        </div>
     </div>
 
     <!-- Template -->
