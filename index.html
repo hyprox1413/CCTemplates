@@ -161,6 +161,29 @@ bool isPrime(ull n) {
 
     <!-- Template -->
     <div class="template-container">
+        <div class="template-label">Miller-Rabin Primality Test</div>
+        <div class="code-container">
+            <pre><code></code>// copied from cp-algo
+vll prefixFn(const string_view &s) {
+  vll res(sz(s));
+  rep(i, 1, sz(s)) {
+    ll j = res[i - 1];
+    while (j &gt; 0 && s[i] != s[j]) {
+      j = res[j - 1];
+    }
+    if (s[i] == s[j]) {
+      j++;
+    }
+    res[i] = j;
+  }
+  return res;
+}</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
         <div class="template-label">Tarjan's Algorithm</div>
         <div class="code-container">
             <pre><code>vll discovery(N, -1), lowlink(N, -1), ancestry;
