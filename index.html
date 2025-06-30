@@ -315,14 +315,88 @@ pair&lt;mint&lt;MOD1&gt;, mint&lt;MOD2&gt;&gt; combine_hashes(poly_hash &phash1,
 
     <!-- Template -->
     <div class="template-container">
+        <div class="template-label">Point and Line</div>
+        <div class="code-container">
+            <pre><code>struct point {
+  ll x, y;
+
+  point& operator+=(const point& p) {
+    x += p.x;
+    y += p.y;
+    return *this;
+  }
+  friend point operator+(point p, const point& q) {
+    p += q;
+    return p;
+  }
+  point& operator-=(const point& p) {
+    x -= p.x;
+    y -= p.y;
+    return *this;
+  }
+  friend point operator-(point p, const point& q) {
+    p -= q;
+    return p;
+  }
+
+  ll dot(const point& p) {
+    return x * p.x + y * p.y;
+  }
+  ll cross(const point& p) {
+    return x * p.y - y * p.x;
+  }
+};
+
+struct line {
+  ll a, b, c;
+
+  const bool operator< (const line& l) const {
+    if (a < l.a) return true;
+    if (a > l.a) return false;
+    if (b < l.b) return true;
+    if (b > l.b) return false;
+    if (c < l.c) return true;
+    return false;
+  }
+
+  const bool operator== (const line& l) const {
+    return a == l.a && b == l.b && c == l.c;
+  }
+
+  line (point p, point q) {
+    a = p.y - q.y;
+    b = q.x - p.x;
+    c = -(a * p.x + b * p.y);
+    fix();
+  }
+
+  void fix() {
+    if (a < 0 || (a == 0 && b < 0)) {
+      a = -a;
+      b = -b;
+      c = -c;
+    }
+
+    ll g = gcd(gcd(abs(a), abs(b)), abs(c));
+    a /= g;
+    b /= g;
+    c /= g;
+  }
+};</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
         <div class="template-label">Order Statistic Tree</div>
         <div class="code-container">
             <pre><code>#include &lt;ext/pb_ds/assoc_container.hpp&gt;
 #include &lt;ext/pb_ds/tree_policy.hpp&gt;
 using namespace __gnu_pbds;
 
-typedef tree&lt;ll, null_type, less&lt;ll&gt;, rb_tree_tag, tree_order_statistics_node_update&gt; set;
-typedef tree&lt;ll, null_type, less_equal&lt;ll&gt;, rb_tree_tag, tree_order_statistics_node_update&gt; multiset;</code></pre>
+typedef tree&lt;ll, null_type, less&lt;ll&gt;, rb_tree_tag, tree_order_statistics_node_update&gt; ordered_set;
+typedef tree&lt;ll, null_type, less_equal&lt;ll&gt;, rb_tree_tag, tree_order_statistics_node_update&gt; ordered_multiset;</code></pre>
         </div>
         <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
         <div class="description">
