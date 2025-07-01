@@ -350,12 +350,12 @@ pair&lt;mint&lt;MOD1&gt;, mint&lt;MOD2&gt;&gt; combine_hashes(poly_hash &phash1,
 struct line {
   ll a, b, c;
 
-  const bool operator< (const line& l) const {
-    if (a < l.a) return true;
-    if (a > l.a) return false;
-    if (b < l.b) return true;
-    if (b > l.b) return false;
-    if (c < l.c) return true;
+  const bool operator&lt; (const line& l) const {
+    if (a &lt; l.a) return true;
+    if (a &gt; l.a) return false;
+    if (b &lt; l.b) return true;
+    if (b &gt; l.b) return false;
+    if (c &lt; l.c) return true;
     return false;
   }
 
@@ -371,7 +371,7 @@ struct line {
   }
 
   void fix() {
-    if (a < 0 || (a == 0 && b < 0)) {
+    if (a &lt; 0 || (a == 0 && b &lt; 0)) {
       a = -a;
       b = -b;
       c = -c;
