@@ -702,7 +702,7 @@ struct segment_tree {
   vector&lt;int&gt; s;
   vector&lt;ll&gt; lazy;
 
-  void build(vector&lt;ll&gt; &arr, int idx, int tl, int tr) {
+  void build(const vector&lt;ll&gt; &arr, int idx, int tl, int tr) {
     if (tl == tr) {
       s[idx] = tl;
       t[idx] = arr[tl];
@@ -765,7 +765,7 @@ struct segment_tree {
     return query(1, 0, n - 1, l, r);
   }
 
-  segment_tree(vector&lt;ll&gt; &arr) {
+  segment_tree(const vector&lt;ll&gt; &arr) {
     n = arr.size();
     s = vector&lt;int&gt;(n * 4, 0);
     t = vector&lt;ll&gt;(n * 4, 0);
