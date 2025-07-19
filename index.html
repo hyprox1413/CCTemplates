@@ -124,6 +124,104 @@ int main() {
 
     <!-- Template -->
     <div class="template-container">
+        <div class="template-label">Tarjan's Algorithm</div>
+        <div class="code-container">
+            <pre><code>vll discovery(N, -1), lowlink(N, -1), ancestry;
+vector&lt;bool&gt; onStack(N, false);
+ll tarjIdx = 0;
+auto tarjans = [&](auto tarjans, ll u) -&gt; void {
+  discovery[u] = tarjIdx;
+  lowlink[u] = tarjIdx;
+  tarjIdx++;
+  ancestry.push_back(u);
+  onStack[u] = true;
+
+  for (const auto &v : adjList[u]) {
+    if (discovery[v] &lt; 0) {
+      tarjans(tarjans, v);
+      lowlink[u] = min(lowlink[u], lowlink[v]);
+    } else if (onStack[v]) {
+      lowlink[u] = min(lowlink[u], lowlink[v]);
+    }
+  }
+
+  if (discovery[u] == lowlink[u]) {
+    set&lt;ll&gt; scc;
+    ll v = -1;
+    while (v != u) {
+      v = ancestry.back();
+      ancestry.pop_back();
+      onStack[v] = false;
+      scc.insert(v);
+    }
+    handleScc(scc);
+  }
+};</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+        <div class="description">
+          Supply a handleScc function and make sure to call tarjans(tarjans, u) on all vertices u.
+        </div>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
+        <div class="template-label">Closest Pair of Points</div>
+        <div class="code-container">
+            <pre><code>pll closestPair(const vpld& a) {
+  auto dist = [&](ll i, ll j) -> ld {
+    ld dx = a[i].first - a[j].first, dy = a[i].second - a[j].second;
+    return sqrt(dx * dx + dy * dy);
+  };
+
+  assert(sz(a) > 1);
+  vll idxs(sz(a));
+  iota(all(idxs), 0);
+  sort(all(idxs), [&](ll i, ll j) -> bool {return a[i] < a[j];});
+
+  pll res = {0, 1};
+  ld mind = dist(idxs[0], idxs[1]);
+  multiset<pair<ld, ll>> leftx, lefty;
+  rep (i, 0, sz(idxs)) {
+    ll idx = idxs[i];
+    ld x = a[idx].first, y = a[idx].second;
+
+    while (!leftx.empty()) {
+      auto it = leftx.begin();
+      if (it->first < x - mind) {
+        ll jdx = it->second;
+        leftx.erase(it);
+        lefty.erase({a[jdx].second, jdx});
+      } else {
+        break;
+      }
+    }
+    auto it = lefty.lower_bound({y - mind, 0});
+    auto jt = lefty.upper_bound({y + mind, LONG_LONG_MAX});
+    while (it != jt) {
+      ll jdx = it->second;
+      if (dist(idx, jdx) < mind) {
+        res = {idx, jdx};
+        mind = dist(idx, jdx);
+      }
+      it = next(it);
+    }
+
+    leftx.insert({a[idx].first, idx});
+    lefty.insert({a[idx].second, idx});
+  }
+
+  return res;
+};</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+        <div class="description">
+          Returns indices of two closest points in the supplied array in O(nlogn), probably.
+        </div>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
         <div class="template-label">Miller-Rabin Primality Test</div>
         <div class="code-container">
             <pre><code>// copied from KACTL
@@ -176,48 +274,6 @@ vll prefixFn(const string_view &s) {
 }</code></pre>
         </div>
         <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
-    </div>
-
-    <!-- Template -->
-    <div class="template-container">
-        <div class="template-label">Tarjan's Algorithm</div>
-        <div class="code-container">
-            <pre><code>vll discovery(N, -1), lowlink(N, -1), ancestry;
-vector&lt;bool&gt; onStack(N, false);
-ll tarjIdx = 0;
-auto tarjans = [&](auto tarjans, ll u) -&gt; void {
-  discovery[u] = tarjIdx;
-  lowlink[u] = tarjIdx;
-  tarjIdx++;
-  ancestry.push_back(u);
-  onStack[u] = true;
-
-  for (const auto &v : adjList[u]) {
-    if (discovery[v] &lt; 0) {
-      tarjans(tarjans, v);
-      lowlink[u] = min(lowlink[u], lowlink[v]);
-    } else if (onStack[v]) {
-      lowlink[u] = min(lowlink[u], lowlink[v]);
-    }
-  }
-
-  if (discovery[u] == lowlink[u]) {
-    set&lt;ll&gt; scc;
-    ll v = -1;
-    while (v != u) {
-      v = ancestry.back();
-      ancestry.pop_back();
-      onStack[v] = false;
-      scc.insert(v);
-    }
-    handleScc(scc);
-  }
-};</code></pre>
-        </div>
-        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
-        <div class="description">
-          Supply a handleScc function and make sure to call tarjans(tarjans, u) on all vertices u.
-        </div>
     </div>
 
     <!-- Template -->
