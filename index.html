@@ -169,27 +169,27 @@ auto tarjans = [&](auto tarjans, ll u) -&gt; void {
         <div class="template-label">Closest Pair of Points</div>
         <div class="code-container">
             <pre><code>pll closestPair(const vpld& a) {
-  auto dist = [&](ll i, ll j) -> ld {
+  auto dist = [&](ll i, ll j) -&gt; ld {
     ld dx = a[i].first - a[j].first, dy = a[i].second - a[j].second;
     return sqrt(dx * dx + dy * dy);
   };
 
-  assert(sz(a) > 1);
+  assert(sz(a) &gt; 1);
   vll idxs(sz(a));
   iota(all(idxs), 0);
-  sort(all(idxs), [&](ll i, ll j) -> bool {return a[i] < a[j];});
+  sort(all(idxs), [&](ll i, ll j) -&gt; bool {return a[i] &lt; a[j];});
 
   pll res = {0, 1};
   ld mind = dist(idxs[0], idxs[1]);
-  multiset<pair<ld, ll>> leftx, lefty;
+  multiset&lt;pair&lt;ld, ll&gt;&gt; leftx, lefty;
   rep (i, 0, sz(idxs)) {
     ll idx = idxs[i];
     ld x = a[idx].first, y = a[idx].second;
 
     while (!leftx.empty()) {
       auto it = leftx.begin();
-      if (it->first < x - mind) {
-        ll jdx = it->second;
+      if (it-&gt;first &lt; x - mind) {
+        ll jdx = it-&gt;second;
         leftx.erase(it);
         lefty.erase({a[jdx].second, jdx});
       } else {
@@ -199,8 +199,8 @@ auto tarjans = [&](auto tarjans, ll u) -&gt; void {
     auto it = lefty.lower_bound({y - mind, 0});
     auto jt = lefty.upper_bound({y + mind, LONG_LONG_MAX});
     while (it != jt) {
-      ll jdx = it->second;
-      if (dist(idx, jdx) < mind) {
+      ll jdx = it-&gt;second;
+      if (dist(idx, jdx) &lt; mind) {
         res = {idx, jdx};
         mind = dist(idx, jdx);
       }
