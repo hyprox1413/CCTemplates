@@ -464,6 +464,130 @@ pair&lt;mint&lt;MOD1&gt;, mint&lt;MOD2&gt;&gt; combine_hashes(poly_hash &phash1,
         <div class="template-label">Point and Line</div>
         <div class="code-container">
             <pre><code>struct point {
+  ld x, y;
+
+  point& operator+=(const point& p) {
+    x += p.x;
+    y += p.y;
+    return *this;
+  }
+  friend point operator+(point p, const point& q) {
+    p += q;
+    return p;
+  }
+  point& operator-=(const point& p) {
+    x -= p.x;
+    y -= p.y;
+    return *this;
+  }
+  friend point operator-(point p, const point& q) {
+    p -= q;
+    return p;
+  }
+
+  ld dot(const point& p) {
+    return x * p.x + y * p.y;
+  }
+  ld cross(const point& p) {
+    return x * p.y - y * p.x;
+  }
+  ld angle() {
+    if (x == 0) {
+      if (y &gt; 0) return numbers::pi_v&lt;ld&gt; / 2;
+      return 3 * numbers::pi_v&lt;ld&gt; / 2;
+    }
+    if (x &gt; 0) {
+      if (y &gt;= 0) return atan(y / x);
+      return 2 * numbers::pi_v&lt;ld&gt; + atan(y / x);
+    }
+    return numbers::pi_v&lt;ld&gt; + atan(y / x);
+  }
+  ld length() {
+    return sqrt(x * x + y * y);
+  }
+};
+point operator*(const ld& s, const point& p) {
+  return {s * p.x, s * p.y};
+}
+point operator*(const point& p, const ld& s) {
+  return {s * p.x, s * p.y};
+}
+point operator/(const point& p, const ld& s) {
+  return {p.x / s, p.y / s};
+}
+point rotate(const point& p, ld theta) {
+  return {cos(theta) * p.x - sin(theta) * p.y, sin(theta) * p.x + cos(theta) * p.y};
+}
+ld dist(const point& p, const point& q) {
+  return (p - q).length();
+}
+
+struct line {
+  ld a, b, c;
+
+  line (point p, point q) {
+    a = p.y - q.y;
+    b = q.x - p.x;
+    c = -(a * p.x + b * p.y);
+  }
+};
+
+ld area(const vector&lt;point&gt;& polygon) {
+  ld res = 0;
+  rep (i, 0, sz(polygon)) {
+    ll j = (i + 1) % sz(polygon);
+    res += polygon[i].x * polygon[j].y - polygon[i].y * polygon[j].x;
+  }
+  return res / 2;
+}</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+        <div class="description">
+          TODO: add line-line intersection
+        </div>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
+        <div class="template-label">Circle and Ellipse Utilities</div>
+        <div class="code-container">
+            <pre><code>ld segmentArea(ld r, ld t) {
+  return r * r * (t - sin(t)) / 2;
+}
+
+ld ellipticSegmentArea(ld c, ld l, const point& p, const point& q) {
+  ld a = l / 2 - c, b = sqrt(a * a - c * c);
+  point pp = {p.x / a, p.y / b}, qp = {q.x / a, q.y / b};
+  if (pp.angle() &gt; qp.angle()) swap(pp, qp);
+  return a * b * segmentArea(1, qp.angle() - pp.angle());
+}
+
+pair&lt;point, point&gt; circleLineIntersection(ld r, const point& p, const point& q) {
+  line l(p, q);
+  ld d = sqrt(r * r - l.c * l.c / (l.a * l.a + l.b * l.b));
+  ld m = sqrt(d * d / (l.a * l.a + l.b * l.b));
+  ld x0 = -(l.a * l.c) / (l.a * l.a + l.b * l.b), y0 = -(l.b * l.c) / (l.a * l.a + l.b * l.b);
+  return {{x0 + l.b * m, y0 - l.a * m}, {x0 - l.b * m, y0 + l.a * m}};
+}
+
+pair&lt;point, point&gt; ellipseLineIntersection(ld c, ld l, const point& p, const point& q) {
+  ld a = l / 2 - c, b = sqrt(a * a - c * c);
+  point pp = {p.x / a, p.y / b}, qp = {q.x / a, q.y / b};
+  auto [ap, bp] = circleLineIntersection(1, pp, qp);
+  return {{ap.x * a, ap.y * b}, {bp.x * a, bp.y * b}};
+}</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+        <div class="description">
+          Both functions assume that the major axis is parallel to the x-axis and that the ellipse is centered at the origin, so use transformations as necessary.
+        </div>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
+        <div class="template-label">Unique Point and Line</div>
+        <div class="code-container">
+            <pre><code>struct point {
   ll x, y;
 
   point& operator+=(const point& p) {
