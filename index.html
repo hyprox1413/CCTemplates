@@ -222,6 +222,59 @@ auto tarjans = [&](auto tarjans, ll u) -&gt; void {
 
     <!-- Template -->
     <div class="template-container">
+        <div class="template-label">Sieve and Friends</div>
+        <div class="code-container">
+            <pre><code></code>vll primes;
+vll upfs[MAXN + 1]; // unique prime factors
+ll totient[MAXN + 1];
+void sieve() {
+  rep (i, 2, MAXN + 1) {
+    if (upfs[i].empty()) {
+      primes.push_back(i);
+      totient[i] = i - 1;
+
+      ll j = i;
+      while (j &lt;= MAXN) {
+        upfs[j].push_back(i);
+        j += i;
+      }
+    }
+
+    for (const auto& p : primes) {
+      if (p * i &gt; MAXN) break;
+      if (i % p) {
+        totient[p * i] = totient[i] * (p - 1);
+      } else {
+        totient[p * i] = totient[i] * p;
+      }
+    }
+  }
+}
+
+vector&lt;vll&gt; divisors(ll x) {
+  vector&lt;vll&gt; res;
+  auto dfs = [&](auto dfs, ll prod, ll ct, ll idx) -&gt; void {
+    if (idx == sz(upfs[x])) {
+      if (!ct) return;
+      while (ct &gt; sz(res)) res.push_back(vll());
+      res[ct - 1].push_back(prod);
+      return;
+    }
+    dfs(dfs, prod, ct, idx + 1);
+    dfs(dfs, prod * upfs[x][idx], ct + 1, idx + 1);
+  };
+  dfs(dfs, 1, 0, 0);
+  return res;
+}</code></pre>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this)">Copy to Clipboard</button>
+        <div class="description">
+          upfs holds the unique prime factors of each number up to MAXN and divisors(x) returns all products of subsets of upfs[x] in a 2d array.
+        </div>
+    </div>
+
+    <!-- Template -->
+    <div class="template-container">
         <div class="template-label">Miller-Rabin Primality Test</div>
         <div class="code-container">
             <pre><code>// copied from KACTL
