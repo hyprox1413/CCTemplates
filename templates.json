@@ -120,7 +120,7 @@
     "title": "Order Statistic Tree",
     "description": "Gnu policy-based data structures implementation of order statistic trees. Just use set and multiset as you typically would, but you can also do stuff with order.",
     "code": "#include <ext/pb_ds/assoc_container.hpp>\n#include <ext/pb_ds/tree_policy.hpp>\nusing namespace __gnu_pbds;\n\ntypedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> ordered_set;\ntypedef tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update> ordered_multiset;",
-    "category": "Divide and Conquer",
+    "category": "Data Structures",
     "tags": [
       "structure",
       "bsearch",
@@ -131,7 +131,7 @@
     "title": "Disjoint Set Union",
     "description": "DSU with path compression and union-by-size. id holds the representatives of each set. If id[x] is negative, it means that x is the representative and the set is of size -id[x]. Easily modified to support one-way unite.",
     "code": "ll find(ll p, vector<ll> &id) {\n  ll idp = p;\n  while (id[idp] >= 0) {\n    idp = id[idp];\n  }\n  while (id[p] >= 0) {\n    ll temp = id[p];\n    id[p] = idp;\n    p = temp;\n  }\n  return idp;\n}\n \nll size(ll p, vector<ll> &id) {\n  ll idp = find(p, id);\n  return -id[idp];\n}\n \nvoid unite(ll p, ll q, vector<ll> &id) {\n  ll idp = find(p, id);\n  ll idq = find(q, id);\n  if (idp == idq) {\n    return;\n  }\n  if (id[idp] < id[idq]) {\n    id[idq] = id[idq] + id[idp];\n    id[idp] = idq;\n    return;\n  }\n  id[idp] = id[idp] + id[idq];\n  id[idq] = idp;\n}",
-    "category": "Divide and Conquer",
+    "category": "Data Structures",
     "tags": [
       "structure",
       "amortized"
@@ -141,7 +141,7 @@
     "title": "Sparse Table",
     "description": "Typical Sparse Table.  Ensure that the binary operation passed to the constructor is associative.  TODO: support constant-time RMQ.",
     "code": "template <class T>\nstruct sparse_table {\n  T (*op) (T a, T b);\n  unsigned int length, depth;\n  vector<vector<T>> table;\n  \n  sparse_table(vector<T> arr, T (*o) (T a, T b)) {\n    op = o;\n    length = arr.size();\n    depth = bit_width(length);\n    table = vector<vector<T>>(depth, vector<T>());\n    table[0] = arr;\n    for (unsigned int i = 1; i < depth; i++) {\n      for (unsigned int j = 0; j + (1 << i) <= length; j++) {\n        table[i].push_back(op(table[i - 1][j], table[i - 1][j + (1 << i - 1)]));\n      }\n    }\n  }\n  \n  T query(unsigned int l, unsigned int r) {\n    bool has_been_set = false;\n    T out;\n    for (unsigned int i = depth - 1; i >= 0; i--) {\n      while (l + (1 << i) - 1 <= r) {\n        if (!has_been_set) {\n          out = table[i][l];\n          has_been_set = true;\n        } else {\n          out = op(out, table[i][l]);\n        }\n        l += (1 << i);\n      }\n      if (!i) {\n        break;\n      }\n    }\n    return out;\n  }\n};",
-    "category": "Divide and Conquer",
+    "category": "Data Structures",
     "tags": [
       "structure",
       "bsearch"
@@ -151,7 +151,7 @@
     "title": "Fenwick Tree",
     "description": "Typical Fenwick Tree.  Ensure that the binary operation passed to the constructor is a group operation and supply its inverse and zero.",
     "code": "template <class T> struct fenwick_tree {\n  T (*op) (T a, T b);\n  T (*inv) (T a);\n  T zero;\n  vector<T> bit;\n\n  T prefix(int idx) {\n    if (idx < 0) {\n      return zero;\n    }\n    if (idx >= size()) idx = size() - 1;\n    T result = bit[idx];\n    for (int i = (idx & idx + 1) - 1; i >= 0; i = (i & i + 1) - 1) {\n      result = op(result, bit[i]);\n    }\n    return result;\n  }\n\n  T query(int l, int r) {\n    return op(prefix(r), inv(prefix(l - 1)));\n  }\n\n  void set(int idx, T val) {\n    T diff = op(val, inv(query(idx, idx)));\n    for (int i = idx; i < bit.size(); i = i | i + 1) {\n      bit[i] = op(bit[i], diff);\n    }\n  }\n\n  void add(int idx, T val) {\n    for (int i = idx; i < bit.size(); i = i | i + 1) {\n      bit[i] = op(bit[i], val);\n    }\n  }\n\n  void push_back(T val) {\n    int idx = bit.size();\n    int left = idx & (idx + 1);\n    if (idx == left) {\n      bit.push_back(val);\n    } else {\n      bit.push_back(op(val, query(left, idx - 1)));\n    }\n  }\n\n  unsigned int size() {\n    return bit.size();\n  }\n\n  int lower_bound(T a, ll (*comp) (T, T)) {\n    int res = 0;\n    for (int i = 1 << (bit_width(size()) - 1); i > 0; i >>= 1) {\n      if (res + i - 1 < size() && comp(bit[res + i - 1], a) < 0) {\n        res += i;\n        a = op(a, inv(bit[res - 1]));\n      }\n    }\n    return res;\n  }\n\n  int upper_bound(T a, ll (*comp) (T, T)) {\n    int res = 0;\n    for (int i = 1 << (bit_width(size()) - 1); i > 0; i >>= 1) {\n      if (res + i - 1 < size() && comp(bit[res + i - 1], a) <= 0) {\n        res += i;\n        a = op(a, inv(bit[res - 1]));\n      }\n    }\n    return res;\n  }\n\n  fenwick_tree(vector<T> arr, T(*o) (T a, T b), T(*iv) (T a), T z) {\n    op = o;\n    inv = iv;\n    zero = z;\n    int length = arr.size();\n    bit = vector<T>(length, z);\n    for (int i = 0; i < length; i++) {\n      add(i, arr[i]);\n    }\n  }\n};\n\nll add(ll a, ll b) { return a + b; }\nll neg(ll a) { return -a; }\nll diff(ll a, ll b) { return a - b; }", 
-    "category": "Divide and Conquer",
+    "category": "Data Structures",
     "tags": [
       "structure",
       "bsearch"
@@ -161,7 +161,7 @@
     "title": "Point Update Segment Tree",
     "description": "Point update segment tree.  Make sure to define the info class and overload its addition operator.",
     "code": "struct segment_tree {\n  vector<info> t;\n  int n;\n\n  segment_tree(const vector<info> &a) {\n    t = vector<info>(4 * a.size());\n    n = a.size();\n    build(1, 0, n - 1, a);\n  }\n\n  void build(int idx, int tl, int tr, const vector<info> &a) {\n    if (tl == tr) {\n      t[idx] = a[tl];\n      return;\n    }\n    int tm = tl + (tr - tl) / 2;\n    build(2 * idx, tl, tm, a);\n    build(2 * idx + 1, tm + 1, tr, a);\n    t[idx] = t[2 * idx] + t[2 * idx + 1];\n  }\n\n  inline void update(int m, const info &a) {\n    update(1, 0, n - 1, m, a);\n  }\n\n  void update(int idx, int tl, int tr, int m, const info &a) {\n    if (m < tl || m > tr) return;\n    if (tl == tr) {\n      t[idx] = a;\n      return;\n    }\n    int tm = tl + (tr - tl) / 2;\n    update(2 * idx, tl, tm, m, a);\n    update(2 * idx + 1, tm + 1, tr, m, a);\n    t[idx] = t[2 * idx] + t[2 * idx + 1];\n  }\n\n  inline info query(int l, int r) {\n    return query(1, 0, n - 1, l, r);\n  }\n\n  info query(int idx, int tl, int tr, int l, int r) {\n    if (r < l) return info();\n    if (tl == l && tr == r) return t[idx];\n    int tm = tl + (tr - tl) / 2;\n    return query(2 * idx, tl, tm, l, min(tm, r)) + query(2 * idx + 1, tm + 1, tr, max(tm + 1, l), r);\n  }\n};",
-    "category": "Divide and Conquer",
+    "category": "Data Structures",
     "tags": [
       "structure",
       "bsearch"
@@ -171,7 +171,7 @@
     "title": "Range Update Segment Tree",
     "description": "Range update, maximum query segment tree.",
     "code": "// lazy range addition update, maximum query segment tree adapted from https://cp-algorithms.com/data_structures/segment_tree.html\nstruct segment_tree {\n  int n;\n  vector<ll> t;\n  vector<int> s;\n  vector<ll> lazy;\n\n  void build(const vector<ll> &arr, int idx, int tl, int tr) {\n    if (tl == tr) {\n      s[idx] = tl;\n      t[idx] = arr[tl];\n    } else {\n      int tm = tl + (tr - tl) / 2;\n      build(arr, idx * 2, tl, tm);\n      build(arr, idx * 2 + 1, tm + 1, tr);\n      if (t[idx * 2] >= t[idx * 2 + 1]) {\n        s[idx] = s[idx * 2];\n        t[idx] = t[idx * 2];\n      } else {\n        s[idx] = s[idx * 2 + 1];\n        t[idx] = t[idx * 2 + 1];\n      }\n    }\n  }\n\n  void push(int idx) {\n    t[idx * 2] += lazy[idx];\n    lazy[idx * 2] += lazy[idx];\n    t[idx * 2 + 1] += lazy[idx];\n    lazy[idx * 2 + 1] += lazy[idx];\n    lazy[idx] = 0;\n  }\n\n  void update(int idx, int tl, int tr, int l, int r, ll diff) {\n    if (l > r) return;\n    if (l == tl && r == tr) {\n      t[idx] += diff;\n      lazy[idx] += diff;\n    } else {\n      push(idx);\n      int tm = tl + (tr - tl) / 2;\n      update(idx * 2, tl, tm, l, min(r, tm), diff);\n      update(idx * 2 + 1, tm + 1, tr, max(l, tm + 1), r, diff);\n      if (t[idx * 2] >= t[idx * 2 + 1]) {\n        s[idx] = s[idx * 2];\n        t[idx] = t[idx * 2];\n      } else {\n        s[idx] = s[idx * 2 + 1];\n        t[idx] = t[idx * 2 + 1];\n      }\n    }\n  }\n\n  inline void update(int l, int r, ll diff) {\n    update(1, 0, n - 1, l, r, diff);\n  }\n\n  pair<ll, int> query(int idx, int tl, int tr, int l, int r) {\n    if (l > r) return make_pair(LONG_LONG_MIN, -1);\n    if (l == tl && r == tr) return make_pair(t[idx], s[idx]);\n    push(idx);\n    int tm = tl + (tr - tl) / 2;\n    return max(query(idx * 2, tl, tm, l, min(r, tm)),\n               query(idx * 2 + 1, tm + 1, tr, max(l, tm + 1), r));\n  }\n\n  inline pair<ll, int> query(int l, int r) {\n    return query(1, 0, n - 1, l, r);\n  }\n\n  segment_tree(const vector<ll> &arr) {\n    n = arr.size();\n    s = vector<int>(n * 4, 0);\n    t = vector<ll>(n * 4, 0);\n    lazy = vector<ll>(n * 4, 0);\n    build(arr, 1, 0, n - 1);\n  }\n};",
-    "category": "Divide and Conquer",
+    "category": "Data Structures",
     "tags": [
       "structure",
       "bsearch"
@@ -181,7 +181,7 @@
     "title": "Li Chao Tree",
     "description": "Li Chao Tree implemented as a dynamic segment tree on lines.",
     "code": "struct line {\n  ll a, b;\n\n  ll val(ll x) {\n    return a * x + b;\n  }\n};\n\nstruct node {\n  node * left = NULL, * right = NULL;\n  line v;\n  bool has_line = false;\n  ll l, r;\n\n  node(ll l, ll r) {\n    this->l = l;\n    this->r = r;\n  }\n\n  void ensure_left() {\n    if (!left && l < r) {\n      ll m = l + (r - l) / 2;\n      left = new node(l, m);\n      if (has_line) {\n        left->v = v;\n      }\n    }\n  }\n\n  void ensure_right() {\n    if (!right && l < r) {\n      ll m = l + (r - l) / 2;\n      right = new node(m + 1, r);\n      if (has_line) {\n        right->has_line = true;\n        right->v = v;\n      }\n    }\n  }\n};\n\nstruct li_chao_tree {\n  ll ml, mr;\n  node * root = NULL;\n\n  li_chao_tree(ll l, ll r) {\n    ml = l;\n    mr = r;\n    root = new node(l, r);\n  };\n\n  inline void update(line v, ll l, ll r) {\n    update(root, v, ml, mr, l, r);\n  }\n\n  void update(node * cur, line v, ll tl, ll tr, ll l, ll r) {\n    if (l > r) return;\n    if (tl == l && tr == r) {\n      update_node(cur, v);\n    } else if (tl < tr) {\n      ll tm = tl + (tr - tl) / 2;\n      if (l <= tm) {\n        cur->ensure_left();\n        update(cur->left, v, tl, tm, l, min(tm, r));\n      }\n      if (r > tm) {\n        cur->ensure_right();\n        update(cur->right, v, tm + 1, tr, max(tm + 1, l), r);\n      }\n    }\n  }\n\n  void update_node(node * cur, line v) {\n    ll tl = cur->l, tr = cur->r;\n    ll tm = tl + (tr - tl) / 2;\n\n    if (!cur->has_line) {\n      // currently no line, replace\n      cur->has_line = true;\n      cur->v = v;\n      return;\n    }\n\n    // there is already a line\n    bool gl = v.val(tl) > cur->v.val(tl), gm = v.val(tm) > cur->v.val(tm), gr = v.val(tr) > cur->v.val(tr);\n    if (gl && gr) {\n      cur->has_line = true;\n      cur->v = v;\n      return;\n    }\n    if (!gl && !gr) return;\n\n    if (gm) swap(cur->v, v);\n    if (gl != gm) {\n      cur->ensure_left();\n      update_node(cur->left, v);\n    } else if (gr != gm) {\n      cur->ensure_right();\n      update_node(cur->right, v);\n    }\n  }\n\n  inline ll query(ll x) {\n    return query(root, x);\n  }\n\n  ll query(node * cur, ll x) {\n    ll tl = cur->l, tr = cur->r;\n    ll tm = tl + (tr - tl) / 2;\n    ll ans = LONG_LONG_MIN;\n    if (cur->has_line) {\n      ans = cur->v.val(x);\n    }\n    if (x <= tm && cur->left) {\n      ans = max(ans, query(cur->left, x));\n    } else if (x > tm && cur->right) {\n      ans = max(ans, query(cur->right, x));\n    }\n    return ans;\n  }\n};",
-    "category": "Divide and Conquer",
+    "category": "Data Structures",
     "tags": [
       "structure",
       "convex-hull",
