@@ -7,7 +7,14 @@
   {
     "title": "Kadane's Algorithm",
     "description": "Returns the maximum nonempty subarray sum.",
-    "code": "ll kadane(const vll& a) {\n  ll N = sz(a), res = LONG_LONG_MIN, sum = 0;\n  rep (i, 0, N) {\n    sum += a[i];\n    res = max(res, sum);\n    sum = max(sum, 0ll);\n  }\n  return res;\n}"
+    "code": "ll kadane(const vll& a) {\n  ll N = sz(a), res = LONG_LONG_MIN, sum = 0;\n  rep (i, 0, N) {\n    sum += a[i];\n    res = max(res, sum);\n    sum = max(sum, 0ll);\n  }\n  return res;\n}",
+    "tags": [
+      "greedy",
+      "dp",
+      "array",
+      "1d",
+      "linear"
+    ]
   },
   {
     "title": "Tarjan's Algorithm",
