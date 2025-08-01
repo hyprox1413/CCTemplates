@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Matthew's Competitive Coding Templates</title>
+  <title>CCTemplates</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -82,7 +82,6 @@
     }
 
     .template-label::before {
-      content: "⚡";
       font-size: 1.1em;
     }
 
@@ -159,7 +158,6 @@
 
     .description {
       margin-top: 1rem;
-      font-style: italic;
       color: var(--text-secondary);
       padding: 0.75rem 1rem;
       background: var(--border-light);
@@ -194,7 +192,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Matthew's Competitive Coding Templates</h1>
+    <h1>CCTemplates</h1>
     <div id="templates-root"></div>
   </div>
   <script>
@@ -224,11 +222,11 @@
 
         const collapseBtn = document.createElement('button');
         collapseBtn.className = 'collapse-btn';
-        collapseBtn.innerHTML = '👁️ Show Code';
+        collapseBtn.innerHTML = '️Show Code';
 
         const copyBtn = document.createElement('button');
         copyBtn.className = 'copy-btn';
-        copyBtn.innerHTML = '📋 Copy Code';
+        copyBtn.innerHTML = 'Copy Code';
 
         const codeDiv = document.createElement('div');
         codeDiv.className = 'collapsible collapsed';
@@ -241,22 +239,22 @@
 
         collapseBtn.onclick = () => {
           codeDiv.classList.toggle('collapsed');
-          collapseBtn.innerHTML = codeDiv.classList.contains('collapsed') ? '👁️ Show Code' : '🙈 Hide Code';
+          collapseBtn.innerHTML = codeDiv.classList.contains('collapsed') ? 'Show Code' : 'Hide Code';
         };
 
         copyBtn.onclick = async () => {
           try {
             await navigator.clipboard.writeText(tmpl.code);
             const originalText = copyBtn.innerHTML;
-            copyBtn.innerHTML = '✅ Copied!';
+            copyBtn.innerHTML = 'Copied!';
             setTimeout(() => {
               copyBtn.innerHTML = originalText;
-            }, 2000);
+            }, 500);
           } catch (err) {
-            copyBtn.innerHTML = '❌ Failed';
+            copyBtn.innerHTML = 'Failed';
             setTimeout(() => {
-              copyBtn.innerHTML = '📋 Copy Code';
-            }, 2000);
+              copyBtn.innerHTML = 'Copy Code';
+            }, 500);
           }
         };
 
