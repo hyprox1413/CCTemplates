@@ -2,55 +2,201 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Matthew's Competitive Coding Templates</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    .template-container { margin: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; max-width: 800px; }
-    .template-label { font-size: 1.2em; font-weight: bold; margin-bottom: 10px; }
-    .code-container { background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 10px 0; position: relative; }
-    .copy-btn, .collapse-btn { margin: 5px; }
-    .collapsible.collapsed { display: none; }
-    pre { margin: 0; white-space: pre-wrap; font-family: 'Courier New', Courier, monospace; }
-    .description { margin-top: 10px; font-style: italic; color: #666; }
-        .copy-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 0;
-            cursor: pointer;
-            margin: 5px 0;
-        }
+    :root {
+      --primary-color: #2563eb;
+      --primary-hover: #1d4ed8;
+      --secondary-color: #10b981;
+      --secondary-hover: #059669;
+      --background: #f8fafc;
+      --surface: #ffffff;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --text-muted: #9ca3af;
+      --border: #e5e7eb;
+      --border-light: #f3f4f6;
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
 
-        .copy-btn:hover {
-            background-color: #45a049;
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        .description {
-            margin-top: 10px;
-            font-style: italic;
-            color: #666;
-        }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: var(--background);
+      margin: 0;
+      padding: 0;
+    }
 
-        .collapse-btn {
-            background-color: #0078d4;
-            color: white;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 0;
-            cursor: pointer;
-            margin: 5px 0;
-        }
-        .collapse-btn:hover {
-            background-color: #005fa3;
-        }
-        .collapsed {
-            display: none;
-        }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-align: center;
+      margin: 0 0 3rem 0;
+      color: var(--text-primary);
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .template-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin: 0 0 1.5rem 0;
+      box-shadow: var(--shadow);
+      transition: all 0.2s ease;
+    }
+
+    .template-container:hover {
+      border-color: var(--primary-color);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    .template-label {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .template-label::before {
+      content: "⚡";
+      font-size: 1.1em;
+    }
+
+    .code-container {
+      background: #f8fafc;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin: 1rem 0;
+      position: relative;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .copy-btn, .collapse-btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0.625rem 1.25rem;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .collapse-btn {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .collapse-btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .copy-btn {
+      background: var(--secondary-color);
+      color: white;
+    }
+
+    .copy-btn:hover {
+      background: var(--secondary-hover);
+      transform: translateY(-1px);
+    }
+
+    .copy-btn:active, .collapse-btn:active {
+      transform: translateY(0);
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      border: 1px solid #334155;
+    }
+
+    .collapsible.collapsed {
+      display: none;
+    }
+
+    .description {
+      margin-top: 1rem;
+      font-style: italic;
+      color: var(--text-secondary);
+      padding: 0.75rem 1rem;
+      background: var(--border-light);
+      border-radius: var(--radius);
+      border-left: 4px solid var(--primary-color);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .template-container {
+        padding: 1rem;
+      }
+
+      .button-group {
+        flex-direction: column;
+      }
+
+      .copy-btn, .collapse-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>Matthew's Competitive Coding (CC) Templates</h1>
-  <div id="templates-root"></div>
+  <div class="container">
+    <h1>Matthew's Competitive Coding Templates</h1>
+    <div id="templates-root"></div>
+  </div>
   <script>
   // Load code templates from JSON
   fetch('templates.json')
@@ -68,13 +214,21 @@
         label.innerText = tmpl.title;
         container.appendChild(label);
 
-        // Code block with collapse button
+        // Code block with buttons
         const codeContainer = document.createElement('div');
         codeContainer.className = 'code-container';
 
+        // Button group
+        const buttonGroup = document.createElement('div');
+        buttonGroup.className = 'button-group';
+
         const collapseBtn = document.createElement('button');
         collapseBtn.className = 'collapse-btn';
-        collapseBtn.innerText = 'Show Code';
+        collapseBtn.innerHTML = '👁️ Show Code';
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.innerHTML = '📋 Copy Code';
 
         const codeDiv = document.createElement('div');
         codeDiv.className = 'collapsible collapsed';
@@ -87,20 +241,29 @@
 
         collapseBtn.onclick = () => {
           codeDiv.classList.toggle('collapsed');
-          collapseBtn.innerText = codeDiv.classList.contains('collapsed') ? 'Show Code' : 'Hide Code';
+          collapseBtn.innerHTML = codeDiv.classList.contains('collapsed') ? '👁️ Show Code' : '🙈 Hide Code';
         };
 
-        codeContainer.appendChild(collapseBtn);
+        copyBtn.onclick = async () => {
+          try {
+            await navigator.clipboard.writeText(tmpl.code);
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '✅ Copied!';
+            setTimeout(() => {
+              copyBtn.innerHTML = originalText;
+            }, 2000);
+          } catch (err) {
+            copyBtn.innerHTML = '❌ Failed';
+            setTimeout(() => {
+              copyBtn.innerHTML = '📋 Copy Code';
+            }, 2000);
+          }
+        };
+
+        buttonGroup.appendChild(collapseBtn);
+        buttonGroup.appendChild(copyBtn);
+        codeContainer.appendChild(buttonGroup);
         codeContainer.appendChild(codeDiv);
-
-        // Copy button
-        const copyBtn = document.createElement('button');
-        copyBtn.className = 'copy-btn';
-        copyBtn.innerText = 'Copy to Clipboard';
-        copyBtn.onclick = () => {
-          navigator.clipboard.writeText(tmpl.code);
-        };
-        codeContainer.appendChild(copyBtn);
 
         container.appendChild(codeContainer);
 
