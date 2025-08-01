@@ -111,8 +111,8 @@
     }
 
     .toc-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      display: flex;
+      flex-direction: column;
       gap: 0.5rem;
       margin-top: 1rem;
     }
@@ -131,6 +131,22 @@
       background: var(--border-light);
       color: var(--primary-color);
       border-color: var(--border);
+    }
+
+    .toc-category {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--border-light);
+      border-radius: var(--radius);
+      border-left: 4px solid var(--primary-color);
+    }
+
+    .toc-category:first-child {
+      margin-top: 0;
     }
 
     .search-stats {
@@ -288,7 +304,7 @@
       }
 
       .toc-list {
-        grid-template-columns: 1fr;
+        flex-direction: column;
       }
 
       h1 {
@@ -358,8 +374,16 @@
   fetch('templates.json')
     .then(res => res.json())
     .then(templates => {
-      allTemplates = templates;
-      filteredTemplates = [...templates];
+      // Sort templates by category, then by title
+      allTemplates = templates.sort((a, b) => {
+        const categoryA = a.category || 'Miscellaneous';
+        const categoryB = b.category || 'Miscellaneous';
+        if (categoryA !== categoryB) {
+          return categoryA.localeCompare(categoryB);
+        }
+        return a.title.localeCompare(b.title);
+      });
+      filteredTemplates = [...allTemplates];
       buildTOC();
       renderTemplates();
       updateSearchStats();
@@ -370,12 +394,35 @@
     const tocList = document.getElementById('toc-list');
     tocList.innerHTML = '';
     
+    // Group templates by category
+    const categories = {};
     allTemplates.forEach((tmpl, idx) => {
-      const tocItem = document.createElement('div');
-      tocItem.className = 'toc-item';
-      tocItem.textContent = tmpl.title;
-      tocItem.onclick = () => scrollToTemplate(idx);
-      tocList.appendChild(tocItem);
+      const category = tmpl.category || 'Miscellaneous';
+      if (!categories[category]) {
+        categories[category] = [];
+      }
+      categories[category].push({ template: tmpl, index: idx });
+    });
+    
+    // Sort categories
+    const sortedCategories = Object.keys(categories).sort();
+    
+    // Build TOC with category sections
+    sortedCategories.forEach(category => {
+      // Create category header
+      const categoryHeader = document.createElement('div');
+      categoryHeader.className = 'toc-category';
+      categoryHeader.textContent = category;
+      tocList.appendChild(categoryHeader);
+      
+      // Add templates in this category
+      categories[category].forEach(({ template, index }) => {
+        const tocItem = document.createElement('div');
+        tocItem.className = 'toc-item';
+        tocItem.textContent = template.title;
+        tocItem.onclick = () => scrollToTemplate(index);
+        tocList.appendChild(tocItem);
+      });
     });
   }
 
