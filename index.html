@@ -370,12 +370,47 @@
     const tocList = document.getElementById('toc-list');
     tocList.innerHTML = '';
     
+    // Group templates by category
+    const categorizedTemplates = {};
     allTemplates.forEach((tmpl, idx) => {
-      const tocItem = document.createElement('div');
-      tocItem.className = 'toc-item';
-      tocItem.textContent = tmpl.title;
-      tocItem.onclick = () => scrollToTemplate(idx);
-      tocList.appendChild(tocItem);
+      const category = tmpl.category || 'Uncategorized';
+      if (!categorizedTemplates[category]) {
+        categorizedTemplates[category] = [];
+      }
+      categorizedTemplates[category].push({ template: tmpl, index: idx });
+    });
+    
+    // Sort categories and templates within each category
+    const sortedCategories = Object.keys(categorizedTemplates).sort();
+    
+    sortedCategories.forEach(category => {
+      // Create category header
+      const categoryHeader = document.createElement('div');
+      categoryHeader.style.cssText = `
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 1rem 0 0.5rem 0;
+        font-size: 0.95rem;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 0.25rem;
+      `;
+      categoryHeader.textContent = category;
+      tocList.appendChild(categoryHeader);
+      
+      // Sort templates within category by title
+      const sortedTemplates = categorizedTemplates[category].sort((a, b) => 
+        a.template.title.localeCompare(b.template.title)
+      );
+      
+      // Add templates under this category
+      sortedTemplates.forEach(({ template, index }) => {
+        const tocItem = document.createElement('div');
+        tocItem.className = 'toc-item';
+        tocItem.textContent = template.title;
+        tocItem.style.marginLeft = '1rem';
+        tocItem.onclick = () => scrollToTemplate(index);
+        tocList.appendChild(tocItem);
+      });
     });
   }
 
@@ -453,112 +488,150 @@
     const root = document.getElementById('templates-root');
     root.innerHTML = '';
     
+    // Group filtered templates by category
+    const categorizedTemplates = {};
     filteredTemplates.forEach((tmpl, filteredIdx) => {
-      // Find original index for TOC navigation
       const originalIdx = allTemplates.findIndex(t => t === tmpl);
-      
-      // Create template container
-      const container = document.createElement('div');
-      container.className = 'template-container';
-      container.setAttribute('data-template-index', originalIdx);
-
-      // Title with category and tags
-      const label = document.createElement('div');
-      label.className = 'template-label';
-      
-      let titleHTML = tmpl.title;
-      if (tmpl.category) {
-        titleHTML += ` <span style="font-size: 0.8em; color: var(--text-muted); font-weight: 400;">[${tmpl.category}]</span>`;
+      const category = tmpl.category || 'Uncategorized';
+      if (!categorizedTemplates[category]) {
+        categorizedTemplates[category] = [];
       }
-      label.innerHTML = titleHTML;
-      container.appendChild(label);
+      categorizedTemplates[category].push({ template: tmpl, originalIndex: originalIdx });
+    });
+    
+    // Sort categories and templates within each category
+    const sortedCategories = Object.keys(categorizedTemplates).sort();
+    
+    sortedCategories.forEach(category => {
+      // Create category section header
+      const categorySection = document.createElement('div');
+      categorySection.style.cssText = `
+        margin: 2rem 0 1.5rem 0;
+        padding: 1rem 0 0.5rem 0;
+        border-top: 2px solid var(--border);
+      `;
+      
+      const categoryTitle = document.createElement('h2');
+      categoryTitle.style.cssText = `
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0 0 1rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      `;
+      categoryTitle.textContent = category;
+      categorySection.appendChild(categoryTitle);
+      root.appendChild(categorySection);
+      
+      // Sort templates within category by title
+      const sortedTemplates = categorizedTemplates[category].sort((a, b) => 
+        a.template.title.localeCompare(b.template.title)
+      );
+      
+      // Render templates in this category
+      sortedTemplates.forEach(({ template: tmpl, originalIndex: originalIdx }) => {
+        // Create template container
+        const container = document.createElement('div');
+        container.className = 'template-container';
+        container.setAttribute('data-template-index', originalIdx);
 
-      // Tags (if available)
-      if (tmpl.tags && tmpl.tags.length > 0) {
-        const tagsContainer = document.createElement('div');
-        tagsContainer.style.marginBottom = '1rem';
+        // Title with category and tags
+        const label = document.createElement('div');
+        label.className = 'template-label';
         
-        tmpl.tags.forEach(tag => {
-          const tagSpan = document.createElement('span');
-          tagSpan.style.cssText = `
-            display: inline-block;
-            background: var(--border-light);
-            color: var(--text-secondary);
-            padding: 0.25rem 0.5rem;
-            margin: 0.25rem 0.25rem 0.25rem 0;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            border: 1px solid var(--border);
-          `;
-          tagSpan.textContent = tag;
-          tagsContainer.appendChild(tagSpan);
-        });
-        
-        container.appendChild(tagsContainer);
-      }
+        let titleHTML = tmpl.title;
+        label.innerHTML = titleHTML;
+        container.appendChild(label);
 
-      // Code block with buttons
-      const codeContainer = document.createElement('div');
-      codeContainer.className = 'code-container';
-
-      // Button group
-      const buttonGroup = document.createElement('div');
-      buttonGroup.className = 'button-group';
-
-      const collapseBtn = document.createElement('button');
-      collapseBtn.className = 'collapse-btn';
-      collapseBtn.innerHTML = 'Show Code';
-
-      const copyBtn = document.createElement('button');
-      copyBtn.className = 'copy-btn';
-      copyBtn.innerHTML = 'Copy Code';
-
-      const codeDiv = document.createElement('div');
-      codeDiv.className = 'collapsible collapsed';
-
-      const pre = document.createElement('pre');
-      const code = document.createElement('code');
-      code.textContent = tmpl.code;
-      pre.appendChild(code);
-      codeDiv.appendChild(pre);
-
-      collapseBtn.onclick = () => {
-        codeDiv.classList.toggle('collapsed');
-        collapseBtn.innerHTML = codeDiv.classList.contains('collapsed') ? 'Show Code' : 'Hide Code';
-      };
-
-      copyBtn.onclick = async () => {
-        try {
-          await navigator.clipboard.writeText(tmpl.code);
-          const originalText = copyBtn.innerHTML;
-          copyBtn.innerHTML = 'Copied!';
-          setTimeout(() => {
-            copyBtn.innerHTML = originalText;
-          }, 500);
-        } catch (err) {
-          copyBtn.innerHTML = 'Failed';
-          setTimeout(() => {
-            copyBtn.innerHTML = 'Copy Code';
-          }, 500);
+        // Tags (if available)
+        if (tmpl.tags && tmpl.tags.length > 0) {
+          const tagsContainer = document.createElement('div');
+          tagsContainer.style.marginBottom = '1rem';
+          
+          tmpl.tags.forEach(tag => {
+            const tagSpan = document.createElement('span');
+            tagSpan.style.cssText = `
+              display: inline-block;
+              background: var(--border-light);
+              color: var(--text-secondary);
+              padding: 0.25rem 0.5rem;
+              margin: 0.25rem 0.25rem 0.25rem 0;
+              border-radius: 4px;
+              font-size: 0.75rem;
+              border: 1px solid var(--border);
+            `;
+            tagSpan.textContent = tag;
+            tagsContainer.appendChild(tagSpan);
+          });
+          
+          container.appendChild(tagsContainer);
         }
-      };
 
-      buttonGroup.appendChild(collapseBtn);
-      buttonGroup.appendChild(copyBtn);
-      codeContainer.appendChild(buttonGroup);
-      codeContainer.appendChild(codeDiv);
+        // Code block with buttons
+        const codeContainer = document.createElement('div');
+        codeContainer.className = 'code-container';
 
-      container.appendChild(codeContainer);
+        // Button group
+        const buttonGroup = document.createElement('div');
+        buttonGroup.className = 'button-group';
 
-      // Description
-      if (tmpl.description) {
-        const desc = document.createElement('div');
-        desc.className = 'description';
-        desc.innerText = tmpl.description;
-        container.appendChild(desc);
-      }
+        const collapseBtn = document.createElement('button');
+        collapseBtn.className = 'collapse-btn';
+        collapseBtn.innerHTML = 'Show Code';
 
-      root.appendChild(container);
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.innerHTML = 'Copy Code';
+
+        const codeDiv = document.createElement('div');
+        codeDiv.className = 'collapsible collapsed';
+
+        const pre = document.createElement('pre');
+        const code = document.createElement('code');
+        code.textContent = tmpl.code;
+        pre.appendChild(code);
+        codeDiv.appendChild(pre);
+
+        collapseBtn.onclick = () => {
+          codeDiv.classList.toggle('collapsed');
+          collapseBtn.innerHTML = codeDiv.classList.contains('collapsed') ? 'Show Code' : 'Hide Code';
+        };
+
+        copyBtn.onclick = async () => {
+          try {
+            await navigator.clipboard.writeText(tmpl.code);
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = 'Copied!';
+            setTimeout(() => {
+              copyBtn.innerHTML = originalText;
+            }, 500);
+          } catch (err) {
+            copyBtn.innerHTML = 'Failed';
+            setTimeout(() => {
+              copyBtn.innerHTML = 'Copy Code';
+            }, 500);
+          }
+        };
+
+        buttonGroup.appendChild(collapseBtn);
+        buttonGroup.appendChild(copyBtn);
+        codeContainer.appendChild(buttonGroup);
+        codeContainer.appendChild(codeDiv);
+
+        container.appendChild(codeContainer);
+
+        // Description
+        if (tmpl.description) {
+          const desc = document.createElement('div');
+          desc.className = 'description';
+          desc.innerText = tmpl.description;
+          container.appendChild(desc);
+        }
+
+        root.appendChild(container);
+      });
     });
   }
 
