@@ -3,4 +3,5 @@ A collection of common C++ functions and data structures useful for competitive 
 
 Templates from my own work, https://github.com/kth-competitive-programming/kactl, and https://cp-algorithms.com
 
-Website written using AI agents and some good old copy-paste from: Claude Sonnet 3.5, GPT-4.1, and Copilot.
+Website mostly written using AI agents and some good old copy-paste from: Claude Sonnet 3.5, GPT-4.1, and Copilot.
+
