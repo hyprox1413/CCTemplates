@@ -16,10 +16,9 @@
       --background: #f8fafc;
       --surface: #ffffff;
       --text-primary: #1f2937;
-      --text-secondary: #6b7280;
-      --text-muted: #9ca3af;
+      --text-secondary: #444851;
       --border: #e5e7eb;
-      --border-light: #f3f4f6;
+      --background-shaded: #f3f3f3;
       --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
       --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
       --radius: 8px;
@@ -72,7 +71,7 @@
 
     .search-clear {
       padding: 0.75rem 1rem;
-      background: var(--text-muted);
+      background: var(--primary-color);
       color: white;
       border: none;
       border-radius: var(--radius);
@@ -83,7 +82,7 @@
     }
 
     .search-clear:hover {
-      background: var(--text-secondary);
+      background: var(--secondary-hover);
     }
 
     .toc-container {
@@ -109,7 +108,7 @@
 
     .toc-toggle {
       font-size: 0.875rem;
-      color: var(--text-muted);
+      color: var(--text-secondary);
     }
 
     .toc-list {
@@ -130,7 +129,7 @@
     }
 
     .toc-item:hover {
-      background: var(--border-light);
+      background: var(--background-shaded);
       color: var(--primary-color);
       border-color: var(--border);
     }
@@ -142,7 +141,7 @@
       margin-top: 1rem;
       margin-bottom: 0.5rem;
       padding: 0.5rem 0.75rem;
-      background: var(--border-light);
+      background: var(--background-shaded);
       border-radius: var(--radius);
       border-left: 4px solid var(--primary-color);
     }
@@ -152,14 +151,14 @@
     }
 
     .search-stats {
-      color: var(--text-muted);
+      color: var(--text-secondary);
       font-size: 0.875rem;
       margin-bottom: 1rem;
     }
 
     .no-results {
       text-align: center;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       padding: 3rem;
       font-size: 1.1rem;
     }
@@ -211,8 +210,7 @@
     }
 
     .code-container {
-      background: #f8fafc;
-      border: 1px solid var(--border-light);
+      border: 2px solid var(--border);
       border-radius: var(--radius);
       padding: 1rem;
       margin: 1rem 0;
@@ -285,7 +283,7 @@
       margin-top: 1rem;
       color: var(--text-secondary);
       padding: 0.75rem 1rem;
-      background: var(--border-light);
+      background: var(--background-shaded);
       border-radius: var(--radius);
       border-left: 4px solid var(--primary-color);
     }
@@ -364,7 +362,6 @@
     <!-- No Results Message -->
     <div class="no-results" id="no-results" style="display: none;">
       <p>No templates found matching your search criteria.</p>
-      <p>Try adjusting your search terms or <button onclick="clearSearch()" style="color: var(--primary-color); background: none; border: none; cursor: pointer; text-decoration: underline;">clear the search</button>.</p>
     </div>
   </div>
   <script>
@@ -517,7 +514,7 @@
       
       let titleHTML = tmpl.title;
       if (tmpl.category) {
-        titleHTML += ` <span style="font-size: 0.8em; color: var(--text-muted); font-weight: 400;">[${tmpl.category}]</span>`;
+        titleHTML += ` <span style="font-size: 0.8em; color: var(--text-secondary); font-weight: 400;">[${tmpl.category}]</span>`;
       }
       label.innerHTML = titleHTML;
       container.appendChild(label);
@@ -531,7 +528,7 @@
           const tagSpan = document.createElement('span');
           tagSpan.style.cssText = `
             display: inline-block;
-            background: var(--border-light);
+            background: var(--background-shaded);
             color: var(--text-secondary);
             padding: 0.25rem 0.5rem;
             margin: 0.25rem 0.25rem 0.25rem 0;
