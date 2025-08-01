@@ -46,7 +46,17 @@
       <p>No templates found matching your search criteria.</p>
     </div>
 
-    <!-- <button id="scroll-top-btn" title="Go to top">↑</button> -->
+    <button id="scroll-top-btn" title="Go to top" aria-label="Scroll to top">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <defs>
+          <linearGradient id="arrow-gradient" x1="0" y1="28" x2="28" y2="0" gradientUnits="userSpaceOnUse">
+            <stop stop-color="var(--primary-color)" />
+            <stop offset="1" stop-color="var(--secondary-color)" />
+          </linearGradient>
+        </defs>
+        <path d="M14 22V6M14 6L7 13M14 6l7 7" stroke="url(#arrow-gradient)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
   </div>
   <script src="script.js"></script>
 </body>

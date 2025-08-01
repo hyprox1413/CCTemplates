@@ -270,19 +270,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Get the button
 const btn = document.getElementById("scroll-top-btn");
 
-// Show/hide button on scroll
-window.onscroll = function() {
+window.addEventListener('scroll', function() {
   if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-    btn.style.display = "block";
+    btn.classList.add('visible');
   } else {
-    btn.style.display = "none";
+    btn.classList.remove('visible');
   }
-};
+});
 
-// Scroll to top on click
 btn.onclick = function() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+};
