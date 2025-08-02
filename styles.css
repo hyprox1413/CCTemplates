@@ -82,6 +82,13 @@ body {
   padding: 1.5rem;
   margin-bottom: 2rem;
   box-shadow: var(--shadow);
+  transition: all 0.2s ease;
+}
+
+.toc-container:hover {
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 .toc-header {
@@ -253,6 +260,7 @@ h1 {
 
 pre {
   margin-top: 16px;
+  margin-bottom: 0;
   white-space: pre-wrap;
   font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
   font-size: 0.875rem;
