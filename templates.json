@@ -231,5 +231,15 @@
     "tags": [
       "python"
     ]
+  },
+  {
+    "title": "Longest Increasing Subsequence",
+    "description": "Returns indices. Works in O(NlogN).",
+    "code": "\/\/ returns indices\r\nvll longestIncrSubseq(const vll& a) {\r\n  ll N = sz(a);\r\n  vll end(N + 1, LONG_LONG_MAX), idx(N + 1, -1), par(N, -1);\r\n  end[0] = LONG_LONG_MIN;\r\n\r\n  ll len = 0;\r\n  rep (i, 0, N) {\r\n    ll lo = 0, hi = N;\r\n    while (lo < hi) {\r\n      ll mid = lo + (hi - lo) \/ 2;\r\n\r\n      if (end[mid] >= a[i]) {\r\n        hi = mid;\r\n      } else {\r\n        lo = mid + 1;\r\n      }\r\n    }\r\n\r\n    end[lo] = a[i];\r\n    idx[lo] = i;\r\n    if (lo) par[i] = idx[lo - 1];\r\n    len = max(len, lo);\r\n  }\r\n\r\n  vll seq;\r\n  ll pos = idx[len];\r\n  while (pos >= 0) {\r\n    seq.push_back(pos);\r\n    pos = par[pos];\r\n  }\r\n  reverse(all(seq));\r\n\r\n  return seq;\r\n}\r\n",
+    "category": "Dynamic Programming",
+    "tags": [
+      "bsearch",
+      "linearithmic"
+    ]
   }
 ]
