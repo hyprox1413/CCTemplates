@@ -121,7 +121,7 @@
   },
   {
     "title": "Order Statistic Tree",
-    "description": "Gnu policy-based data structures implementation of order statistic trees. Just use set and multiset as you typically would, but you can also do stuff with order.",
+    "description": "Gnu policy-based data structures implementation of order statistic trees. Just use set and multiset as you typically would, but you can also do stuff with order. Note that lower_bound and upper_bound swap meanings for ordered_multiset since the only change from ordered_set is switching the comparator to less_equal. By the same token, do not attempt to use find() on it.",
     "code": "#include <ext/pb_ds/assoc_container.hpp>\n#include <ext/pb_ds/tree_policy.hpp>\nusing namespace __gnu_pbds;\n\ntypedef tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update> ordered_set;\ntypedef tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update> ordered_multiset;",
     "category": "Data Structures",
     "tags": [
