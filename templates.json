@@ -134,7 +134,7 @@
   {
     "title": "Disjoint Set Union",
     "description": "DSU with path compression and union-by-size. id holds the representatives of each set. If id[x] is negative, it means that x is the representative and the set is of size -id[x]. Easily modified to support one-way unite.",
-    "code": "ll find(ll p, vector<ll> &id) {\n  ll idp = p;\n  while (id[idp] >= 0) {\n    idp = id[idp];\n  }\n  while (id[p] >= 0) {\n    ll temp = id[p];\n    id[p] = idp;\n    p = temp;\n  }\n  return idp;\n}\n \nll size(ll p, vector<ll> &id) {\n  ll idp = find(p, id);\n  return -id[idp];\n}\n \nvoid unite(ll p, ll q, vector<ll> &id) {\n  ll idp = find(p, id);\n  ll idq = find(q, id);\n  if (idp == idq) {\n    return;\n  }\n  if (id[idp] < id[idq]) {\n    id[idq] = id[idq] + id[idp];\n    id[idp] = idq;\n    return;\n  }\n  id[idp] = id[idp] + id[idq];\n  id[idq] = idp;\n}",
+    "code": "struct disjoint_sets {\r\n  vll id;\r\n  disjoint_sets(ll N): id(vll(N, -1)) {}\r\n\r\n  ll find(ll p) {\r\n    ll idp = p;\r\n    while (id[idp] >= 0) {\r\n      idp = id[idp];\r\n    }\r\n    while (id[p] >= 0) {\r\n      ll temp = id[p];\r\n      id[p] = idp;\r\n      p = temp;\r\n    }\r\n    return idp;\r\n  }\r\n\r\n  ll size(ll p) {\r\n    ll idp = find(p);\r\n    return -id[idp];\r\n  }\r\n\r\n  void unite(ll p, ll q) {\r\n    ll idp = find(p);\r\n    ll idq = find(q);\r\n    if (idp == idq) {\r\n      return;\r\n    }\r\n    if (id[idp] < id[idq]) {\r\n      id[idq] = id[idq] + id[idp];\r\n      id[idp] = idq;\r\n      return;\r\n    }\r\n    id[idp] = id[idp] + id[idq];\r\n    id[idq] = idp;\r\n  }\r\n};\r\n",
     "category": "Data Structures",
     "tags": [
       "amortized",
