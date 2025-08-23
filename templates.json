@@ -173,7 +173,7 @@
   },
   {
     "title": "Point Update Segment Tree",
-    "description": "Iterative point update segment tree. You would only ever use this because it provides cheaper queries for small ranges. Otherwise, range update tree is strictly better. Make sure to define the info class and overload its addition operator.",
+    "description": "Iterative point update segment tree. You would only ever use this because it provides cheaper queries for small ranges. Otherwise, Lazy Range Update Segment Tree is strictly better. Make sure to define the info class and overload its addition operator.",
     "code": "template <class info, class jnfo> struct segment_tree {\r\n  ll N;\r\n  vector<info> a;\r\n\r\n  segment_tree(): N(0) {}\r\n\r\n  template <class T> segment_tree(const vector<T>& arr):\r\n    N(1ll << bit_width((ull) sz(arr) - 1)), a(2 * N) {\r\n    rep (i, 0, sz(arr)) {\r\n      a[i + N] = arr[i];\r\n    }\r\n    repr (i, 1, N) {\r\n      a[i] = a[2 * i] * a[2 * i + 1];\r\n    }\r\n  }\r\n\r\n  void update(ll i, jnfo x) {\r\n    ll idx = i + N;\r\n    a[idx] += x;\r\n    idx \/= 2;\r\n    while (idx) {\r\n      a[idx] = a[2 * idx] * a[2 * idx + 1];\r\n      idx \/= 2;\r\n    }\r\n  }\r\n\r\n  info query(ll l, ll r) {\r\n    info res;\r\n    l += N, r += N;\r\n    while (l <= r) {\r\n      if (l == r) {\r\n        res *= a[l];\r\n        return res;\r\n      }\r\n      if (l & 1) {\r\n        res *= a[l];\r\n        l++;\r\n      }\r\n      if (!(r & 1)) {\r\n        res *= a[r];\r\n        r--;\r\n      }\r\n      l \/= 2, r \/= 2;\r\n    }\r\n    return res;\r\n  }\r\n};\r\n",
     "category": "Data Structures",
     "tags": [
