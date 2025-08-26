@@ -166,18 +166,10 @@ async function copyWithDependencies(template) {
   
   // Add dependencies first (in the order they appear)
   dependencies.forEach(dep => {
-    combinedCode += `// ========== ${dep.title} ==========\n`;
-    if (dep.description) {
-      combinedCode += `// ${dep.description}\n`;
-    }
-    combinedCode += `${dep.code}\n\n`;
+    combinedCode += `${dep.code}\n`;
   });
   
   // Add the main template last
-  combinedCode += `// ========== ${template.title} ==========\n`;
-  if (template.description) {
-    combinedCode += `// ${template.description}\n`;
-  }
   combinedCode += `${template.code}\n`;
   
   return combinedCode;
