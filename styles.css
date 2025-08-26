@@ -220,7 +220,7 @@ h1 {
   margin-bottom: 0;
 }
 
-.copy-btn, .collapse-btn {
+.copy-btn, .collapse-btn, .copy-with-deps-btn {
   font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
   font-weight: 500;
@@ -249,12 +249,17 @@ h1 {
   color: white;
 }
 
-.copy-btn:hover {
+.copy-with-deps-btn {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.copy-btn:hover, .copy-with-deps-btn:hover {
   background: var(--secondary-hover);
   transform: translateY(-1px);
 }
 
-.copy-btn:active, .collapse-btn:active {
+.copy-btn:active, .collapse-btn:active, .copy-with-deps-btn:active {
   transform: translateY(0);
 }
 
@@ -357,7 +362,7 @@ pre {
     flex-direction: column;
   }
 
-  .copy-btn, .collapse-btn {
+  .copy-btn, .collapse-btn, .copy-with-deps-btn {
     width: 100%;
     justify-content: center;
   }

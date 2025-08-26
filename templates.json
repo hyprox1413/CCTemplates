@@ -195,6 +195,9 @@
       "logarithmic-update",
       "KACTL",
       "USACO-guide"
+    ],
+    "dependencies": [
+      "Point Update Segment Tree"
     ]
   },
   {
@@ -215,6 +218,9 @@
       "divide-and-conquer",
       "logarithmic-query",
       "logarithmic-update"
+    ],
+    "dependencies": [
+      "Lazy Range Update Info"
     ]
   },
   {
@@ -230,6 +236,9 @@
       "logarithmic-squared-update",
       "KACTL",
       "USACO-guide"
+    ],
+    "dependencies": [
+      "Lazy Range Update Segment Tree"
     ]
   },
   {
@@ -312,6 +321,9 @@
       "logarithmic-query",
       "logarithmic-update",
       "zhtluo"
+    ],
+    "dependencies": [
+      "Lazy Range Update Info"
     ]
   }
 ]
