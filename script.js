@@ -127,6 +127,54 @@ function clearSearch() {
   searchTemplates('');
 }
 
+// Function to recursively find all dependencies
+function findAllDependencies(templateTitle, visited = new Set()) {
+  // Prevent infinite loops
+  if (visited.has(templateTitle)) {
+    return [];
+  }
+  visited.add(templateTitle);
+  
+  // Find the template by title
+  const template = allTemplates.find(t => t.title === templateTitle);
+  if (!template || !template.dependencies) {
+    return [];
+  }
+  
+  let allDeps = [];
+  
+  // For each dependency, recursively find its dependencies
+  template.dependencies.forEach(dep => {
+    const subDeps = findAllDependencies(dep, new Set(visited));
+    allDeps.push(...subDeps);
+    if (!allDeps.some(d => d.title === dep)) {
+      const depTemplate = allTemplates.find(t => t.title === dep);
+      if (depTemplate) {
+        allDeps.push(depTemplate);
+      }
+    }
+  });
+  
+  return allDeps;
+}
+
+// Function to copy template with all its dependencies
+async function copyWithDependencies(template) {
+  const dependencies = findAllDependencies(template.title);
+  
+  let combinedCode = '';
+  
+  // Add dependencies first (in the order they appear)
+  dependencies.forEach(dep => {
+    combinedCode += `${dep.code}\n`;
+  });
+  
+  // Add the main template last
+  combinedCode += `${template.code}\n`;
+  
+  return combinedCode;
+}
+
 // Render templates
 function renderTemplates() {
   const root = document.getElementById('templates-root');
@@ -224,6 +272,32 @@ function renderTemplates() {
 
     buttonGroup.appendChild(collapseBtn);
     buttonGroup.appendChild(copyBtn);
+
+    // Add "Copy with Dependencies" button only if template has dependencies
+    if (tmpl.dependencies && tmpl.dependencies.length > 0) {
+      const copyWithDepsBtn = document.createElement('button');
+      copyWithDepsBtn.className = 'copy-with-deps-btn';
+      copyWithDepsBtn.innerHTML = 'Copy with Dependencies';
+
+      copyWithDepsBtn.onclick = async () => {
+        try {
+          const combinedCode = await copyWithDependencies(tmpl);
+          await navigator.clipboard.writeText(combinedCode);
+          const originalText = copyWithDepsBtn.innerHTML;
+          copyWithDepsBtn.innerHTML = 'Copied!';
+          setTimeout(() => {
+            copyWithDepsBtn.innerHTML = originalText;
+          }, 500);
+        } catch (err) {
+          copyWithDepsBtn.innerHTML = 'Failed';
+          setTimeout(() => {
+            copyWithDepsBtn.innerHTML = 'Copy with Dependencies';
+          }, 500);
+        }
+      };
+
+      buttonGroup.appendChild(copyWithDepsBtn);
+    }
     codeContainer.appendChild(buttonGroup);
     codeContainer.appendChild(codeDiv);
 
