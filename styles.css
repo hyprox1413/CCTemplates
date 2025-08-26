@@ -234,6 +234,27 @@ h1 {
   gap: 0.5rem;
 }
 
+.copy-with-deps-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.625rem 1.25rem;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #2563eb;
+  color: white;
+}
+
+.copy-with-deps-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
 .collapse-btn {
   background: var(--primary-color);
   color: white;
@@ -254,7 +275,7 @@ h1 {
   transform: translateY(-1px);
 }
 
-.copy-btn:active, .collapse-btn:active {
+.copy-btn:active, .collapse-btn:active, .copy-with-deps-btn:active {
   transform: translateY(0);
 }
 
@@ -357,7 +378,7 @@ pre {
     flex-direction: column;
   }
 
-  .copy-btn, .collapse-btn {
+  .copy-btn, .collapse-btn, .copy-with-deps-btn {
     width: 100%;
     justify-content: center;
   }
