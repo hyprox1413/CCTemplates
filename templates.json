@@ -95,7 +95,7 @@
     "category": "String Processing",
     "tags": [
       "hashing",
-      "probabalistic",
+      "probabilistic",
       "linear"
     ],
     "dependencies": [
