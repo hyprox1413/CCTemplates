@@ -195,6 +195,9 @@
       "divide-and-conquer",
       "logarithmic-query",
       "logarithmic-update"
+    ], 
+    "dependencies":[
+      "Point Update Info"
     ]
   },
   {
