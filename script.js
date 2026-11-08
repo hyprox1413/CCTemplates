@@ -319,6 +319,7 @@ function renderTemplates() {
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('search-input');
   const searchClear = document.getElementById('search-clear');
+  const printTemplates = document.getElementById('print-templates');
   const tocHeader = document.getElementById('toc-header');
   const tocContainer = document.querySelector('.toc-container');
   
@@ -333,6 +334,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Clear button
   searchClear.addEventListener('click', clearSearch);
+
+  // Print the currently displayed templates
+  printTemplates.addEventListener('click', () => window.print());
   
   // TOC toggle
   tocHeader.addEventListener('click', () => {

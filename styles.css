@@ -59,9 +59,8 @@ body {
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-.search-clear {
+.search-clear, .print-btn {
   padding: 0.75rem 1rem;
-  background: var(--primary-color);
   color: white;
   border: none;
   border-radius: var(--radius);
@@ -71,7 +70,19 @@ body {
   transition: background-color 0.2s ease;
 }
 
+.search-clear {
+  background: var(--primary-color);
+}
+
 .search-clear:hover {
+  background: var(--primary-hover);
+}
+
+.print-btn {
+  background: var(--secondary-color);
+}
+
+.print-btn:hover {
   background: var(--secondary-hover);
 }
 
@@ -328,6 +339,64 @@ pre {
   background: var(--background-shaded);
   /* Optionally, scale up a bit on hover */
   /* transform: scale(1.07); */
+}
+
+@media print {
+  body {
+    color: #000;
+    background: #fff;
+  }
+
+  .container {
+    max-width: none;
+    padding: 0;
+  }
+
+  .search-container,
+  .toc-container,
+  .search-stats,
+  .no-results,
+  #scroll-top-btn,
+  .button-group {
+    display: none !important;
+  }
+
+  h1 {
+    color: #000;
+    background: none;
+    -webkit-text-fill-color: #000;
+    margin-bottom: 1rem;
+  }
+
+  .template-container {
+    border: 1px solid #aaa;
+    box-shadow: none;
+    break-inside: avoid-page;
+  }
+
+  .collapsible.collapsed {
+    display: block;
+  }
+
+  .code-container {
+    border: none;
+    padding: 0;
+  }
+
+  pre {
+    color: #000;
+    background: #fff;
+    border: 1px solid #aaa;
+    padding: 0.75rem;
+    white-space: pre-wrap;
+    overflow: visible;
+    font-size: 9pt;
+  }
+
+  .description {
+    color: #000;
+    background: #fff;
+  }
 }
 
 @media (max-width: 768px) {
